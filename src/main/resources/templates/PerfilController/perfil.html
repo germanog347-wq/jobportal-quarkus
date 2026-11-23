@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Meu Perfil — Portal de Vagas</title>
+    <link rel="stylesheet" href="/css/estilo.css">
+</head>
+<body>
+{#include fragments/nav.html}{/include}
+<div class="container">
+    <div class="card">
+        <div class="profile-header">
+            <div class="avatar">{usuario.nome.substring(0,1).toUpperCase()}</div>
+            <div>
+                <h2>{usuario.nome}</h2>
+                <p class="role">
+                    {#if usuario.isAdmin}Administrador{#else}Candidato{/if}
+                    · {usuario.email}
+                </p>
+            </div>
+        </div>
+
+        {#if erro}<div class="alert alert-erro">{erro}</div>{/if}
+        {#if msg}<div class="alert alert-msg">{msg}</div>{/if}
+
+        <h3 style="margin-bottom:0.85rem">Suas credenciais</h3>
+        <div class="creds-grid">
+            <div class="cred-item">
+                <div class="label">E-mail</div>
+                <div class="value">{usuario.email}</div>
+            </div>
+            <div class="cred-item">
+                <div class="label">CPF</div>
+                <div class="value">{usuario.cpf ?: '—'}</div>
+            </div>
+            <div class="cred-item">
+                <div class="label">Telefone</div>
+                <div class="value">{usuario.telefone ?: '—'}</div>
+            </div>
+            <div class="cred-item">
+                <div class="label">Cidade</div>
+                <div class="value">{usuario.cidade ?: '—'}</div>
+            </div>
+            <div class="cred-item">
+                <div class="label">Nascimento</div>
+                <div class="value">{usuario.dataNascimento ?: '—'}</div>
+            </div>
+            <div class="cred-item">
+                <div class="label">Perfil</div>
+                <div class="value">{#if usuario.isAdmin}Admin{#else}Usuário{/if}</div>
+            </div>
+        </div>
+
+        <h3 style="margin-bottom:0.5rem">Editar dados</h3>
+        <form method="post" action="/perfil">
+            <div class="form-row">
+                <div>
+                    <label>Nome</label>
+                    <input type="text" name="nome" value="{usuario.nome}" required>
+                </div>
+                <div>
+                    <label>E-mail</label>
+                    <input type="email" name="email" value="{usuario.email}" required>
+                </div>
+            </div>
+            <div class="form-row">
+                <div>
+                    <label>CPF</label>
+                    <input type="text" name="cpf" value="{usuario.cpf}" data-mask="cpf" maxlength="14">
+                </div>
+                <div>
+                    <label>Data de nascimento</label>
+                    <input type="date" name="dataNascimento" value="{usuario.dataNascimento}">
+                </div>
+            </div>
+            <div class="form-row">
+                <div>
+                    <label>Telefone</label>
+                    <input type="text" name="telefone" value="{usuario.telefone}" data-mask="phone" maxlength="15">
+                </div>
+                <div>
+                    <label>Cidade</label>
+                    <input type="text" name="cidade" value="{usuario.cidade}">
+                </div>
+            </div>
+            <label>Nova senha (deixe em branco para não alterar)</label>
+            <input type="password" name="senha" minlength="4" placeholder="••••••••" autocomplete="new-password">
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">Salvar alterações</button>
+            </div>
+        </form>
+    </div>
+</div>
+<script src="/js/app.js"></script>
+</body>
+</html>

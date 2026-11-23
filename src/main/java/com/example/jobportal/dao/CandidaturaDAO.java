@@ -1,0 +1,51 @@
+package com.example.jobportal.dao;
+
+import com.example.jobportal.model.Candidatura;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
+import jakarta.persistence.EntityManager;
+import jakarta.transaction.Transactional;
+import java.util.List;
+import java.util.Optional;
+
+@ApplicationScoped
+public class CandidaturaDAO {
+
+    @Inject
+    EntityManager em;
+
+    public Optional<Candidatura> buscarPorId(Long id) {
+        return Optional.ofNullable(em.find(Candidatura.class, id));
+    }
+
+    public List<Candidatura> listarPorUsuario(Long usuarioId) {
+        return em.createQuery(
+                "SELECT c FROM Candidatura c WHERE c.usuario.id = :uid ORDER BY c.criadoEm DESC",
+                Candidatura.class)
+                .setParameter("uid", usuarioId).getResultList();
+    }
+
+    public List<Candidatura> listarTodas() {
+        return em.createQuery("SELECT c FROM Candidatura c ORDER BY c.criadoEm DESC", Candidatura.class)
+                .getResultList();
+    }
+
+    public boolean existe(Long usuarioId, Long vagaId) {
+        Long count = em.createQuery(
+                "SELECT COUNT(c) FROM Candidatura c WHERE c.usuario.id = :uid AND c.vaga.id = :vid",
+                Long.class)
+                .setParameter("uid", usuarioId)
+                .setParameter("vid", vagaId)
+                .getSingleResult();
+        return count > 0;
+    }
+
+    @Transactional
+    public Candidatura salvar(Candidatura c) {
+        if (c.id == null) {
+            em.persist(c);
+            return c;
+        }
+        return em.merge(c);
+    }
+}

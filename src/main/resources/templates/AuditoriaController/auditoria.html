@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Auditoria</title>
+    <link rel="stylesheet" href="/css/estilo.css">
+</head>
+<body>
+{#include fragments/nav.html}{/include}
+<div class="container">
+    <h1 class="page-title">Logs de auditoria</h1>
+    <table>
+        <thead><tr><th>Data</th><th>Ação</th><th>Usuário</th><th>Detalhe</th></tr></thead>
+        <tbody>
+        {#for a in logs}
+            <tr>
+                <td>{a.dataHora}</td>
+                <td><span class="badge">{a.acao}</span></td>
+                <td>{a.usuarioEmail}</td>
+                <td>{a.detalhe}</td>
+            </tr>
+        {/for}
+        </tbody>
+    </table>
+</div>
+<script src="/js/app.js"></script>
+</body>
+</html>

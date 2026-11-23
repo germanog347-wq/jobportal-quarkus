@@ -1,0 +1,21 @@
+<nav class="navbar">
+    <a class="brand" href="/">Portal<span>Vagas</span></a>
+    <a href="/">Home</a>
+    <a href="/vagas">Vagas</a>
+    <a href="/sobre">Sobre</a>
+    {#if usuario}
+        <a href="/minhas-candidaturas">Candidaturas</a>
+        <a href="/perfil">Perfil</a>
+        {#if usuario.isAdmin}
+            <a href="/admin">Admin</a>
+            <a href="/admin/usuarios">Usuários</a>
+            <a href="/admin/candidaturas">Gestão</a>
+            <a href="/admin/auditoria">Auditoria</a>
+        {/if}
+        <span class="user-chip">{usuario.nome}</span>
+        <a class="btn-nav" href="/logout">Sair</a>
+    {#else}
+        <a href="/login" style="margin-left:auto">Login</a>
+        <a class="btn-nav" href="/cadastro">Cadastro</a>
+    {/if}
+</nav>

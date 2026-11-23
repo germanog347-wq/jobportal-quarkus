@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Login — Portal de Vagas</title>
+    <link rel="stylesheet" href="/css/estilo.css">
+</head>
+<body>
+{#include fragments/nav.html usuario=null /}
+<div class="container">
+    <div class="auth-wrap">
+        <div class="card">
+            <h2>Entrar</h2>
+            <p class="subtitle">Use seu e-mail e senha para acessar a conta.</p>
+            {#if erro}<div class="alert alert-erro">{erro}</div>{/if}
+            {#if sucesso}<div class="alert alert-msg">{sucesso}</div>{/if}
+            <form method="post" action="/login">
+                <label>E-mail</label>
+                <input type="email" name="email" required autocomplete="email" placeholder="seu@email.com">
+                <label>Senha</label>
+                <input type="password" name="senha" required autocomplete="current-password" placeholder="••••••••">
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">Entrar</button>
+                    <a href="/cadastro" class="btn btn-outline">Criar conta</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script src="/js/app.js"></script>
+</body>
+</html>

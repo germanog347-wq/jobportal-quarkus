@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Formulário de Vaga</title>
+    <link rel="stylesheet" href="/css/estilo.css">
+</head>
+<body>
+{#include fragments/nav.html}{/include}
+<div class="container">
+    <div class="card" style="max-width:600px">
+        <h2>{#if vaga.id}Editar{#else}Nova{/if} vaga</h2>
+        {#if erros}<div class="alert alert-erro">{erros}</div>{/if}
+        <form method="post" action="{acao}">
+            <label>Título</label>
+            <input type="text" name="titulo" value="{vaga.titulo}" required>
+            <label>Descrição</label>
+            <textarea name="descricao" required>{vaga.descricao}</textarea>
+            <div class="form-row">
+                <div>
+                    <label>Empresa</label>
+                    <input type="text" name="empresa" value="{vaga.empresa}" required>
+                </div>
+                <div>
+                    <label>Localização</label>
+                    <input type="text" name="localizacao" value="{vaga.localizacao}" required>
+                </div>
+            </div>
+            <div class="form-row">
+                <div>
+                    <label>Faixa salarial</label>
+                    <input type="text" name="faixaSalarial" value="{vaga.faixaSalarial}">
+                </div>
+                <div>
+                    <label>Data de expiração</label>
+                    <input type="date" name="dataExpiracao" value="{vaga.dataExpiracao}">
+                </div>
+            </div>
+            <label style="display:flex;align-items:center;gap:0.5rem;margin-top:1rem">
+                <input type="checkbox" name="ativa" style="width:auto" {#if vaga.ativa}checked{/if}> Ativa
+            </label>
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">Salvar</button>
+                <a href="/admin" class="btn btn-outline">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>
+<script src="/js/app.js"></script>
+</body>
+</html>

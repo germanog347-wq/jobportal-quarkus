@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{vaga.titulo} — Portal de Vagas</title>
+    <link rel="stylesheet" href="/css/estilo.css">
+</head>
+<body>
+{#include fragments/nav.html}{/include}
+<div class="container">
+    {#if erro}<div class="alert alert-erro">{erro}</div>{/if}
+    {#if msg}<div class="alert alert-msg">{msg}</div>{/if}
+
+    <div class="card">
+        <span class="badge">Vaga ativa</span>
+        <h2 style="margin-top:0.6rem">{vaga.titulo}</h2>
+        <div class="job-meta">
+            <span>🏢 {vaga.empresa}</span>
+            <span>📍 {vaga.localizacao}</span>
+            {#if vaga.faixaSalarial}<span>💰 {vaga.faixaSalarial}</span>{/if}
+            {#if vaga.dataExpiracao}<span>📅 Expira em {vaga.dataExpiracao}</span>{/if}
+        </div>
+        <p style="margin:1rem 0;white-space:pre-line">{vaga.descricao}</p>
+
+        {#if usuario}
+        <hr style="border:none;border-top:1px solid var(--border);margin:1.25rem 0">
+        <h3>Candidatar-se</h3>
+        <form method="post" action="/vagas/{vaga.id}/candidatar">
+            <label>Mensagem (opcional)</label>
+            <textarea name="mensagem" placeholder="Conte um pouco sobre você..."></textarea>
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">Enviar candidatura</button>
+                <a href="/vagas" class="btn btn-outline">Voltar</a>
+            </div>
+        </form>
+        {#else}
+        <p style="margin-top:1rem"><a href="/login">Faça login</a> para se candidatar.</p>
+        {/if}
+    </div>
+</div>
+<script src="/js/app.js"></script>
+</body>
+</html>

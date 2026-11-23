@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Admin — Candidaturas</title>
+    <link rel="stylesheet" href="/css/estilo.css">
+</head>
+<body>
+{#include fragments/nav.html}{/include}
+<div class="container">
+    <h1 class="page-title">Candidaturas</h1>
+    {#if msg}<div class="alert alert-msg">{msg}</div>{/if}
+    {#if erro}<div class="alert alert-erro">{erro}</div>{/if}
+    <table>
+        <thead><tr><th>Candidato</th><th>Vaga</th><th>Status</th><th>Alterar</th></tr></thead>
+        <tbody>
+        {#for c in candidaturas}
+            <tr>
+                <td>{c.usuario.nome}<br><small style="color:var(--muted)">{c.usuario.email}</small></td>
+                <td>{c.vaga.titulo}</td>
+                <td><span class="badge">{c.status}</span></td>
+                <td>
+                    <form method="post" action="/admin/candidaturas/{c.id}/status" style="display:flex;gap:0.4rem;align-items:center">
+                        <select name="status" style="width:auto;padding:0.35rem 0.5rem">
+                            <option value="ENVIADA" {#if c.status == 'ENVIADA'}selected{/if}>ENVIADA</option>
+                            <option value="EM ANALISE" {#if c.status == 'EM ANALISE'}selected{/if}>EM ANALISE</option>
+                            <option value="APROVADA" {#if c.status == 'APROVADA'}selected{/if}>APROVADA</option>
+                            <option value="REJEITADA" {#if c.status == 'REJEITADA'}selected{/if}>REJEITADA</option>
+                        </select>
+                        <button class="btn btn-sm btn-primary" type="submit">OK</button>
+                    </form>
+                </td>
+            </tr>
+        {/for}
+        </tbody>
+    </table>
+</div>
+<script src="/js/app.js"></script>
+</body>
+</html>

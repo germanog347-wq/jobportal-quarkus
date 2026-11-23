@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Admin — Usuários</title>
+    <link rel="stylesheet" href="/css/estilo.css">
+</head>
+<body>
+{#include fragments/nav.html}{/include}
+<div class="container">
+    <h1 class="page-title">Usuários</h1>
+    {#if msg}<div class="alert alert-msg">{msg}</div>{/if}
+    {#if erro}<div class="alert alert-erro">{erro}</div>{/if}
+    <table>
+        <thead><tr><th>Nome</th><th>E-mail</th><th>Cidade</th><th>Admin</th><th>Ações</th></tr></thead>
+        <tbody>
+        {#for u in usuarios}
+            <tr>
+                <td>{u.nome}</td>
+                <td>{u.email}</td>
+                <td>{u.cidade ?: '—'}</td>
+                <td>{#if u.isAdmin}<span class="badge">Sim</span>{#else}Não{/if}</td>
+                <td>
+                    {#if !u.isAdmin}
+                    <form method="post" action="/admin/usuarios/{u.id}/promover" style="display:inline">
+                        <button class="btn btn-sm btn-primary" type="submit">Promover</button>
+                    </form>
+                    {#else}
+                    <form method="post" action="/admin/usuarios/{u.id}/rebaixar" style="display:inline">
+                        <button class="btn btn-sm btn-outline" type="submit">Rebaixar</button>
+                    </form>
+                    {/if}
+                </td>
+            </tr>
+        {/for}
+        </tbody>
+    </table>
+</div>
+<script src="/js/app.js"></script>
+</body>
+</html>
