@@ -22,7 +22,7 @@ public class HomeController {
     @Inject
     SessaoService sessaoService;
 
-    @CheckedTemplate(basePath = "")
+    @CheckedTemplate
     public static class Templates {
         public static native TemplateInstance homepage(Usuario usuario, String erro);
     }

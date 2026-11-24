@@ -26,7 +26,7 @@ public class VagasController {
     @Inject
     SessaoService sessaoService;
 
-    @CheckedTemplate(basePath = "")
+    @CheckedTemplate
     public static class Templates {
         public static native TemplateInstance vagaVisaoGeral(List<Vaga> vagas, Usuario usuario, String q);
         public static native TemplateInstance vagaDetalhe(Vaga vaga, Usuario usuario, String erro, String msg);

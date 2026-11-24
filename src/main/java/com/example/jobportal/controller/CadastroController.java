@@ -20,7 +20,7 @@ public class CadastroController {
     @Inject
     UsuarioBO usuarioBO;
 
-    @CheckedTemplate(basePath = "")
+    @CheckedTemplate
     public static class Templates {
         public static native TemplateInstance usuarioCadastro(Usuario usuario, String erro);
     }

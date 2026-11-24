@@ -24,7 +24,7 @@ public class LoginController {
     @Inject
     SessaoService sessaoService;
 
-    @CheckedTemplate(basePath = "")
+    @CheckedTemplate
     public static class Templates {
         public static native TemplateInstance login(Usuario usuario, String erro, String msg);
     }

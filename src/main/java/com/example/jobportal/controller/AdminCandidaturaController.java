@@ -24,7 +24,7 @@ public class AdminCandidaturaController {
     @Inject
     SessaoService sessaoService;
 
-    @CheckedTemplate(basePath = "")
+    @CheckedTemplate
     public static class Templates {
         public static native TemplateInstance candidaturaGestao(List<Candidatura> candidaturas, Usuario usuario, String msg, String erro);
     }

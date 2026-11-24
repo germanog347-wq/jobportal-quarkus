@@ -23,7 +23,7 @@ public class AdminUsuarioController {
     @Inject
     SessaoService sessaoService;
 
-    @CheckedTemplate(basePath = "")
+    @CheckedTemplate
     public static class Templates {
         public static native TemplateInstance usuarioVisaoGeral(List<Usuario> usuarios, Usuario usuario, String msg, String erro);
     }

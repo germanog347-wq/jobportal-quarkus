@@ -22,7 +22,7 @@ public class AuditoriaController {
     @Inject
     SessaoService sessaoService;
 
-    @CheckedTemplate(basePath = "")
+    @CheckedTemplate
     public static class Templates {
         public static native TemplateInstance logVisao(List<Log> logs, Usuario usuario);
     }

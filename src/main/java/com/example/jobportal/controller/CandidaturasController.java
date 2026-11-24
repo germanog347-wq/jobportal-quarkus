@@ -21,7 +21,7 @@ public class CandidaturasController {
     @Inject
     SessaoService sessaoService;
 
-    @CheckedTemplate(basePath = "")
+    @CheckedTemplate
     public static class Templates {
         public static native TemplateInstance candidaturaMinhas(List<Candidatura> candidaturas, Usuario usuario);
     }
