@@ -20,6 +20,20 @@ META-INF/resources/js/   → máscaras CPF/telefone, confirmações, busca
 CREATE DATABASE jobportal;
 ```
 
+## Chaves JWT
+
+As chaves que assinam o token de login não ficam no repositório. Gere-as uma vez em `src/main/resources`:
+
+```bash
+cd src/main/resources
+openssl genrsa -out rsaPrivateKey.pem 2048
+openssl rsa -pubout -in rsaPrivateKey.pem -out publicKey.pem
+openssl pkcs8 -topk8 -nocrypt -inform pem -in rsaPrivateKey.pem -outform pem -out privateKey.pem
+rm rsaPrivateKey.pem
+```
+
+## Executar
+
 ```bash
 mvn quarkus:dev
 ```

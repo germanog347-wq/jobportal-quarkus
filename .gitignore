@@ -15,3 +15,7 @@ Thumbs.db
 
 # Projeto de referência (não faz parte do código)
 pasta exemplo/
+
+# Chaves JWT (gere localmente, veja o README)
+src/main/resources/privateKey.pem
+src/main/resources/publicKey.pem
