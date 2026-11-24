@@ -23,9 +23,9 @@ public class AdminCandidaturaController {
     @Inject
     SessaoService sessaoService;
 
-    @CheckedTemplate(basePath = "AdminController")
+    @CheckedTemplate(basePath = "")
     public static class Templates {
-        public static native TemplateInstance candidaturas(List<Candidatura> candidaturas, Usuario usuario, String msg, String erro);
+        public static native TemplateInstance candidaturaGestao(List<Candidatura> candidaturas, Usuario usuario, String msg, String erro);
     }
 
     private Response exigirAdmin(String uid) {
@@ -43,7 +43,7 @@ public class AdminCandidaturaController {
         Response r = exigirAdmin(uid);
         if (r != null) return r;
         Usuario u = sessaoService.usuarioLogado(uid).get();
-        return Response.ok(Templates.candidaturas(candidaturaBO.listarTodas(), u, msg, erro))
+        return Response.ok(Templates.candidaturaGestao(candidaturaBO.listarTodas(), u, msg, erro))
                 .type(MediaType.TEXT_HTML).build();
     }
 

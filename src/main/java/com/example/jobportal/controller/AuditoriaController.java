@@ -22,9 +22,9 @@ public class AuditoriaController {
     @Inject
     SessaoService sessaoService;
 
-    @CheckedTemplate
+    @CheckedTemplate(basePath = "")
     public static class Templates {
-        public static native TemplateInstance auditoria(List<Log> logs, Usuario usuario);
+        public static native TemplateInstance logVisao(List<Log> logs, Usuario usuario);
     }
 
     @GET
@@ -33,7 +33,7 @@ public class AuditoriaController {
         Usuario u = sessaoService.usuarioLogado(uid).orElse(null);
         if (u == null) return Response.seeOther(URI.create("/auth/login?erro=Fa%C3%A7a+login")).build();
         if (u.getTipo() != TipoUsuario.ADMIN) return Response.seeOther(URI.create("/homepage")).build();
-        return Response.ok(Templates.auditoria(auditoriaBO.listarTodas(), u))
+        return Response.ok(Templates.logVisao(auditoriaBO.listarTodas(), u))
                 .type(MediaType.TEXT_HTML).build();
     }
 }

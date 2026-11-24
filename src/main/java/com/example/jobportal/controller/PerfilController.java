@@ -20,9 +20,9 @@ public class PerfilController {
     @Inject
     SessaoService sessaoService;
 
-    @CheckedTemplate
+    @CheckedTemplate(basePath = "")
     public static class Templates {
-        public static native TemplateInstance perfil(Usuario usuario, String erro, String msg);
+        public static native TemplateInstance usuarioPerfil(Usuario usuario, String erro, String msg);
     }
 
     @GET
@@ -37,7 +37,7 @@ public class PerfilController {
         }
         // Recarrega do banco para ter dados atualizados
         u = usuarioBO.buscarPorId(u.getId()).orElse(u);
-        return Response.ok(Templates.perfil(u, erro, msg)).type(MediaType.TEXT_HTML).build();
+        return Response.ok(Templates.usuarioPerfil(u, erro, msg)).type(MediaType.TEXT_HTML).build();
     }
 
     @POST

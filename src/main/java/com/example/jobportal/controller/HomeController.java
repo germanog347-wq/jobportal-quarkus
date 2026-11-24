@@ -20,9 +20,9 @@ public class HomeController {
     @Inject
     SessaoService sessaoService;
 
-    @CheckedTemplate
+    @CheckedTemplate(basePath = "")
     public static class Templates {
-        public static native TemplateInstance home(Usuario usuario);
+        public static native TemplateInstance homepage(Usuario usuario);
     }
 
     @GET
@@ -35,6 +35,6 @@ public class HomeController {
     @Produces(MediaType.TEXT_HTML)
     public Response home(@CookieParam("usuarioId") String usuarioIdStr) {
         Usuario usuario = sessaoService.usuarioLogado(usuarioIdStr).orElse(null);
-        return Response.ok(Templates.home(usuario)).type(MediaType.TEXT_HTML).build();
+        return Response.ok(Templates.homepage(usuario)).type(MediaType.TEXT_HTML).build();
     }
 }

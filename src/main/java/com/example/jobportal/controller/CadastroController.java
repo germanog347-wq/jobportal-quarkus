@@ -2,6 +2,7 @@ package com.example.jobportal.controller;
 
 import com.example.jobportal.bo.UsuarioBO;
 import com.example.jobportal.dto.CadastroDTO;
+import com.example.jobportal.model.Usuario;
 import com.example.jobportal.service.SessaoService;
 import io.quarkus.qute.CheckedTemplate;
 import io.quarkus.qute.TemplateInstance;
@@ -19,16 +20,16 @@ public class CadastroController {
     @Inject
     SessaoService sessaoService;
 
-    @CheckedTemplate
+    @CheckedTemplate(basePath = "")
     public static class Templates {
-        public static native TemplateInstance cadastro(String erro);
+        public static native TemplateInstance usuarioCadastro(Usuario usuario, String erro);
     }
 
     @GET
     @Path("/cadastro")
     @Produces(MediaType.TEXT_HTML)
     public TemplateInstance pagina(@QueryParam("erro") String erro) {
-        return Templates.cadastro(erro);
+        return Templates.usuarioCadastro(null, erro);
     }
 
     @POST

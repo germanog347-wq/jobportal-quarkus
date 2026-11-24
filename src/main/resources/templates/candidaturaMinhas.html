@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Minhas Candidaturas</title>
+    <title>Minhas candidaturas — Portal de Vagas</title>
     <link rel="stylesheet" href="/css/estilo.css">
 </head>
 <body>
-{#include fragments/nav.html}{/include}
-<div class="container">
+{#include navbar.html /}
+<main class="container">
     <h1 class="page-title">Minhas candidaturas</h1>
     {#if candidaturas.isEmpty}
         <div class="card empty-state">
@@ -17,22 +17,21 @@
         </div>
     {#else}
     <table>
-        <thead>
-            <tr><th>Vaga</th><th>Empresa</th><th>Status</th><th>Data</th></tr>
-        </thead>
+        <thead><tr><th>Vaga</th><th>Empresa</th><th>Status</th><th>Data</th></tr></thead>
         <tbody>
         {#for c in candidaturas}
             <tr>
                 <td><a href="/vagas/detalhe/{c.vaga.id}">{c.vaga.titulo}</a></td>
                 <td>{c.vaga.empresa}</td>
                 <td><span class="badge">{c.status.descricao}</span></td>
-                <td>{c.criadoEm}</td>
+                <td>{c.criadoEm.formatado}</td>
             </tr>
         {/for}
         </tbody>
     </table>
     {/if}
-</div>
+</main>
+{#include footer.html /}
 <script src="/js/app.js"></script>
 </body>
 </html>

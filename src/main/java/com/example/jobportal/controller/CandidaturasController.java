@@ -21,9 +21,9 @@ public class CandidaturasController {
     @Inject
     SessaoService sessaoService;
 
-    @CheckedTemplate
+    @CheckedTemplate(basePath = "")
     public static class Templates {
-        public static native TemplateInstance minhas(List<Candidatura> candidaturas, Usuario usuario);
+        public static native TemplateInstance candidaturaMinhas(List<Candidatura> candidaturas, Usuario usuario);
     }
 
     @GET
@@ -34,7 +34,7 @@ public class CandidaturasController {
         if (u == null) {
             return Response.seeOther(URI.create("/auth/login?erro=" + enc("Faça login"))).build();
         }
-        return Response.ok(Templates.minhas(candidaturaBO.listarMinhas(u), u))
+        return Response.ok(Templates.candidaturaMinhas(candidaturaBO.listarMinhas(u), u))
                 .type(MediaType.TEXT_HTML).build();
     }
 

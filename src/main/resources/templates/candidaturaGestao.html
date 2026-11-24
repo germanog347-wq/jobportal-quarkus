@@ -3,39 +3,47 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Admin — Candidaturas</title>
+    <title>Gestão de candidaturas — Portal de Vagas</title>
     <link rel="stylesheet" href="/css/estilo.css">
 </head>
 <body>
-{#include fragments/nav.html}{/include}
-<div class="container">
-    <h1 class="page-title">Candidaturas</h1>
-    {#if msg}<div class="alert alert-msg">{msg}</div>{/if}
+{#include navbar.html /}
+<main class="container">
+    <h1 class="page-title">Gestão de candidaturas</h1>
     {#if erro}<div class="alert alert-erro">{erro}</div>{/if}
+    {#if msg}<div class="alert alert-msg">{msg}</div>{/if}
+    {#if candidaturas.isEmpty}
+        <div class="card empty-state">
+            <p>Nenhuma candidatura recebida até agora.</p>
+        </div>
+    {#else}
     <table>
-        <thead><tr><th>Candidato</th><th>Vaga</th><th>Status</th><th>Alterar</th></tr></thead>
+        <thead><tr><th>Candidato</th><th>Vaga</th><th>Data</th><th>Status</th><th>Alterar</th></tr></thead>
         <tbody>
         {#for c in candidaturas}
             <tr>
-                <td>{c.usuario.nome}<br><small style="color:var(--muted)">{c.usuario.email}</small></td>
+                <td>{c.usuario.nome}<br><small class="text-muted">{c.usuario.email}</small></td>
                 <td>{c.vaga.titulo}</td>
+                <td>{c.criadoEm.formatado}</td>
                 <td><span class="badge">{c.status.descricao}</span></td>
                 <td>
-                    <form method="post" action="/candidaturas/status/{c.id}" style="display:flex;gap:0.4rem;align-items:center">
-                        <select name="status" style="width:auto;padding:0.35rem 0.5rem">
+                    <form method="post" action="/candidaturas/status/{c.id}" class="status-form">
+                        <select name="status" aria-label="Novo status">
                             <option value="ENVIADA" {#if c.status == StatusCandidatura:ENVIADA}selected{/if}>Enviada</option>
                             <option value="EM_ANALISE" {#if c.status == StatusCandidatura:EM_ANALISE}selected{/if}>Em análise</option>
                             <option value="APROVADA" {#if c.status == StatusCandidatura:APROVADA}selected{/if}>Aprovada</option>
                             <option value="REJEITADA" {#if c.status == StatusCandidatura:REJEITADA}selected{/if}>Rejeitada</option>
                         </select>
-                        <button class="btn btn-sm btn-primary" type="submit">OK</button>
+                        <button type="submit" class="btn btn-sm btn-primary">Salvar</button>
                     </form>
                 </td>
             </tr>
         {/for}
         </tbody>
     </table>
-</div>
+    {/if}
+</main>
+{#include footer.html /}
 <script src="/js/app.js"></script>
 </body>
 </html>

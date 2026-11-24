@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Usuários — Portal de Vagas</title>
+    <link rel="stylesheet" href="/css/estilo.css">
+</head>
+<body>
+{#include navbar.html /}
+<main class="container">
+    <h1 class="page-title">Usuários</h1>
+    {#if erro}<div class="alert alert-erro">{erro}</div>{/if}
+    {#if msg}<div class="alert alert-msg">{msg}</div>{/if}
+    {#if usuarios.isEmpty}
+        <div class="card empty-state">
+            <p>Nenhum usuário cadastrado.</p>
+        </div>
+    {#else}
+    <table>
+        <thead><tr><th>Nome</th><th>E-mail</th><th>Cidade</th><th>Perfil</th><th>Ações</th></tr></thead>
+        <tbody>
+        {#for u in usuarios}
+            <tr>
+                <td>{u.nome}</td>
+                <td>{u.email}</td>
+                <td>{u.cidade ?: '—'}</td>
+                <td>{#if u.tipo == TipoUsuario:ADMIN}<span class="badge">Administrador</span>{#else}Candidato{/if}</td>
+                <td>
+                    {#if u.tipo == TipoUsuario:ADMIN}
+                    <form method="post" action="/usuario/rebaixar/{u.id}" class="inline-form">
+                        <button type="submit" class="btn btn-sm btn-outline">Rebaixar</button>
+                    </form>
+                    {#else}
+                    <form method="post" action="/usuario/promover/{u.id}" class="inline-form">
+                        <button type="submit" class="btn btn-sm btn-primary">Promover</button>
+                    </form>
+                    {/if}
+                </td>
+            </tr>
+        {/for}
+        </tbody>
+    </table>
+    {/if}
+</main>
+{#include footer.html /}
+<script src="/js/app.js"></script>
+</body>
+</html>

@@ -18,7 +18,7 @@ public class SobreController {
     @Inject
     SessaoService sessaoService;
 
-    @CheckedTemplate
+    @CheckedTemplate(basePath = "")
     public static class Templates {
         public static native TemplateInstance sobre(Usuario usuario);
     }

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Logs — Portal de Vagas</title>
+    <link rel="stylesheet" href="/css/estilo.css">
+</head>
+<body>
+{#include navbar.html /}
+<main class="container">
+    <h1 class="page-title">Logs</h1>
+    {#if logs.isEmpty}
+        <div class="card empty-state">
+            <p>Nenhuma ação registrada até agora.</p>
+        </div>
+    {#else}
+    <table>
+        <thead><tr><th>Data</th><th>Ação</th><th>Usuário</th></tr></thead>
+        <tbody>
+        {#for l in logs}
+            <tr>
+                <td>{l.dataHora.formatado}</td>
+                <td><span class="badge">{l.acao}</span></td>
+                <td>{#if l.usuario}{l.usuario.email}{#else}—{/if}</td>
+            </tr>
+        {/for}
+        </tbody>
+    </table>
+    {/if}
+</main>
+{#include footer.html /}
+<script src="/js/app.js"></script>
+</body>
+</html>

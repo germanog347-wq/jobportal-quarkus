@@ -22,22 +22,22 @@ public class LoginController {
     @Inject
     SessaoService sessaoService;
 
-    @CheckedTemplate
+    @CheckedTemplate(basePath = "")
     public static class Templates {
-        public static native TemplateInstance login(String erro, String sucesso);
+        public static native TemplateInstance login(Usuario usuario, String erro, String msg);
     }
 
     @GET
     @Path("/login")
     @Produces(MediaType.TEXT_HTML)
     public Response login(@QueryParam("erro") String erro,
-                          @QueryParam("sucesso") String sucesso,
+                          @QueryParam("msg") String msg,
                           @CookieParam("usuarioId") String usuarioIdStr) {
         Optional<Usuario> logado = sessaoService.usuarioLogado(usuarioIdStr);
         if (logado.isPresent()) {
             return Response.seeOther(URI.create(logado.get().getTipo() == TipoUsuario.ADMIN ? "/vagas/gestao" : "/homepage")).build();
         }
-        return Response.ok(Templates.login(erro, sucesso)).type(MediaType.TEXT_HTML).build();
+        return Response.ok(Templates.login(null, erro, msg)).type(MediaType.TEXT_HTML).build();
     }
 
     @POST

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Gestão de vagas — Portal de Vagas</title>
+    <link rel="stylesheet" href="/css/estilo.css">
+</head>
+<body>
+{#include navbar.html /}
+<main class="container">
+    <div class="page-header">
+        <h1 class="page-title">Gestão de vagas</h1>
+        <a class="btn btn-primary" href="/vagas/cadastro">+ Nova vaga</a>
+    </div>
+    {#if erro}<div class="alert alert-erro">{erro}</div>{/if}
+    {#if msg}<div class="alert alert-msg">{msg}</div>{/if}
+    {#if vagas.isEmpty}
+        <div class="card empty-state">
+            <p>Nenhuma vaga cadastrada.</p>
+            <a class="btn btn-primary" href="/vagas/cadastro">Cadastrar a primeira vaga</a>
+        </div>
+    {#else}
+    <table>
+        <thead><tr><th>Título</th><th>Empresa</th><th>Expira em</th><th>Situação</th><th>Ações</th></tr></thead>
+        <tbody>
+        {#for v in vagas}
+            <tr>
+                <td>{v.titulo}</td>
+                <td>{v.empresa}</td>
+                <td>{#if v.dataExpiracao}{v.dataExpiracao.formatado}{#else}—{/if}</td>
+                <td>{#if v.ativa}<span class="badge">Ativa</span>{#else}<span class="badge badge-off">Encerrada</span>{/if}</td>
+                <td>
+                    <a class="btn btn-sm btn-outline" href="/vagas/editar/{v.id}">Editar</a>
+                    <form method="post" action="/vagas/excluir/{v.id}" class="inline-form" data-confirm="Excluir esta vaga?">
+                        <button type="submit" class="btn btn-sm btn-danger">Excluir</button>
+                    </form>
+                </td>
+            </tr>
+        {/for}
+        </tbody>
+    </table>
+    {/if}
+</main>
+{#include footer.html /}
+<script src="/js/app.js"></script>
+</body>
+</html>

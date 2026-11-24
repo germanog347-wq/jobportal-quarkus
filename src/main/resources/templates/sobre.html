@@ -7,53 +7,49 @@
     <link rel="stylesheet" href="/css/estilo.css">
 </head>
 <body>
-{#include fragments/nav.html}{/include}
-<div class="container">
-    <div class="card">
-        <h2>Sobre o JobPortal</h2>
-        <p style="margin:0.75rem 0 1.25rem;color:var(--muted);font-size:0.95rem">
-            Unificando contratantes e candidatos em um só lugar.
-        </p>
+{#include navbar.html /}
+<main class="container">
+    <div class="card prose">
+        <h1>Sobre o Portal de Vagas</h1>
+        <p class="lead">Unificando contratantes e candidatos em um só lugar.</p>
 
-        <h3 style="margin:0 0 0.5rem">Quem somos</h3>
-        <p style="margin-bottom:0.9rem;line-height:1.7">
-            O <strong>JobPortal</strong> nasceu da necessidade de tornar o processo de contratação
+        <h3>Quem somos</h3>
+        <p>
+            O <strong>Portal de Vagas</strong> nasceu da necessidade de tornar o processo de contratação
             mais prático e organizado. Nossa empresa buscava uma forma eficiente de conectar
             vagas abertas a profissionais qualificados, sem depender de planilhas, e-mails
             dispersos ou anúncios isolados em redes sociais.
         </p>
-        <p style="margin-bottom:0.9rem;line-height:1.7">
+        <p>
             Assim surgiu a ideia do portal: uma plataforma única para <strong>unificar a parceria
-                entre contratantes e candidatos</strong>. De um lado, as empresas publicam vagas,
+            entre contratantes e candidatos</strong>. De um lado, as empresas publicam vagas,
             acompanham candidaturas e gerenciam status. Do outro, os candidatos encontram
             oportunidades, enviam interesse e acompanham o andamento de forma transparente.
         </p>
-        <p style="margin-bottom:0.9rem;line-height:1.7">
+        <p>
             Nosso objetivo é reduzir barreiras no recrutamento, agilizar a comunicação entre
             as partes e oferecer uma experiência clara — do anúncio da vaga até a seleção
             do profissional.
         </p>
 
-        <h3 style="margin:1.35rem 0 0.5rem">O que oferecemos</h3>
-        <ul style="margin:0 0 1rem 1.25rem;line-height:1.85;color:#334155">
+        <h3>O que oferecemos</h3>
+        <ul>
             <li>Publicação e gestão de vagas para empresas e administradores</li>
             <li>Busca rápida por título, empresa, local ou descrição</li>
             <li>Candidatura online com acompanhamento de status</li>
             <li>Perfil do candidato com dados profissionais e pessoais</li>
-            <li>Área administrativa para usuários, candidaturas e auditoria</li>
+            <li>Área administrativa para usuários, candidaturas e logs</li>
         </ul>
 
-        <h3 style="margin:1.35rem 0 0.5rem">Nossa missão</h3>
-        <p style="margin-bottom:0.9rem;line-height:1.7">
+        <h3>Nossa missão</h3>
+        <p>
             Facilitar o encontro entre quem precisa contratar e quem busca oportunidade,
             com processos simples, rastreáveis e acessíveis. Acreditamos que uma boa
             contratação começa com informação clara e um canal direto entre as partes.
         </p>
-
-
     </div>
-</div>
-<footer class="site-footer">JobPortal · Portal de Vagas</footer>
+</main>
+{#include footer.html /}
 <script src="/js/app.js"></script>
 </body>
 </html>

@@ -3,17 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Meu Perfil — Portal de Vagas</title>
+    <title>Meu perfil — Portal de Vagas</title>
     <link rel="stylesheet" href="/css/estilo.css">
 </head>
 <body>
-{#include fragments/nav.html}{/include}
-<div class="container">
+{#include navbar.html /}
+<main class="container">
     <div class="card">
         <div class="profile-header">
             <div class="avatar">{usuario.nome.substring(0,1).toUpperCase()}</div>
             <div>
-                <h2>{usuario.nome}</h2>
+                <h1>{usuario.nome}</h1>
                 <p class="role">
                     {#if usuario.tipo == TipoUsuario:ADMIN}Administrador{#else}Candidato{/if}
                     · {usuario.email}
@@ -24,7 +24,7 @@
         {#if erro}<div class="alert alert-erro">{erro}</div>{/if}
         {#if msg}<div class="alert alert-msg">{msg}</div>{/if}
 
-        <h3 style="margin-bottom:0.85rem">Suas credenciais</h3>
+        <h3 class="section-title">Seus dados</h3>
         <div class="creds-grid">
             <div class="cred-item">
                 <div class="label">E-mail</div>
@@ -44,55 +44,56 @@
             </div>
             <div class="cred-item">
                 <div class="label">Nascimento</div>
-                <div class="value">{usuario.dataNascimento ?: '—'}</div>
+                <div class="value">{#if usuario.dataNascimento}{usuario.dataNascimento.formatado}{#else}—{/if}</div>
             </div>
             <div class="cred-item">
                 <div class="label">Perfil</div>
-                <div class="value">{#if usuario.tipo == TipoUsuario:ADMIN}Admin{#else}Usuário{/if}</div>
+                <div class="value">{#if usuario.tipo == TipoUsuario:ADMIN}Administrador{#else}Candidato{/if}</div>
             </div>
         </div>
 
-        <h3 style="margin-bottom:0.5rem">Editar dados</h3>
+        <h3 class="section-title">Editar dados</h3>
         <form method="post" action="/usuario/atualizar">
             <div class="form-row">
                 <div>
-                    <label>Nome</label>
-                    <input type="text" name="nome" value="{usuario.nome}" required>
+                    <label for="nome">Nome</label>
+                    <input type="text" id="nome" name="nome" value="{usuario.nome}" required>
                 </div>
                 <div>
-                    <label>E-mail</label>
-                    <input type="email" name="email" value="{usuario.email}" required>
+                    <label for="email">E-mail</label>
+                    <input type="email" id="email" name="email" value="{usuario.email}" required>
                 </div>
             </div>
             <div class="form-row">
                 <div>
-                    <label>CPF</label>
-                    <input type="text" name="cpf" value="{usuario.cpf}" data-mask="cpf" maxlength="14">
+                    <label for="cpf">CPF</label>
+                    <input type="text" id="cpf" name="cpf" value="{usuario.cpf}" data-mask="cpf" maxlength="14">
                 </div>
                 <div>
-                    <label>Data de nascimento</label>
-                    <input type="date" name="dataNascimento" value="{usuario.dataNascimento}">
+                    <label for="dataNascimento">Data de nascimento</label>
+                    <input type="date" id="dataNascimento" name="dataNascimento" value="{usuario.dataNascimento}">
                 </div>
             </div>
             <div class="form-row">
                 <div>
-                    <label>Telefone</label>
-                    <input type="text" name="telefone" value="{usuario.telefone}" data-mask="phone" maxlength="15">
+                    <label for="telefone">Telefone</label>
+                    <input type="text" id="telefone" name="telefone" value="{usuario.telefone}" data-mask="phone" maxlength="15">
                 </div>
                 <div>
-                    <label>Cidade</label>
-                    <input type="text" name="cidade" value="{usuario.cidade}">
+                    <label for="cidade">Cidade</label>
+                    <input type="text" id="cidade" name="cidade" value="{usuario.cidade}">
                 </div>
             </div>
-            <label>Nova senha (deixe em branco para não alterar)</label>
-            <input type="password" name="senha" minlength="4" placeholder="••••••••" autocomplete="new-password">
+            <label for="senha">Nova senha (deixe em branco para não alterar)</label>
+            <input type="password" id="senha" name="senha" minlength="4" placeholder="••••••••" autocomplete="new-password">
 
             <div class="form-actions">
                 <button type="submit" class="btn btn-primary">Salvar alterações</button>
             </div>
         </form>
     </div>
-</div>
+</main>
+{#include footer.html /}
 <script src="/js/app.js"></script>
 </body>
 </html>

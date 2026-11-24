@@ -24,10 +24,10 @@ public class VagasController {
     @Inject
     SessaoService sessaoService;
 
-    @CheckedTemplate
+    @CheckedTemplate(basePath = "")
     public static class Templates {
-        public static native TemplateInstance vagas(List<Vaga> vagas, Usuario usuario, String q);
-        public static native TemplateInstance detalhe(Vaga vaga, Usuario usuario, String erro, String msg);
+        public static native TemplateInstance vagaVisaoGeral(List<Vaga> vagas, Usuario usuario, String q);
+        public static native TemplateInstance vagaDetalhe(Vaga vaga, Usuario usuario, String erro, String msg);
     }
 
     @GET
@@ -36,7 +36,7 @@ public class VagasController {
     public Response listar(@QueryParam("q") String q, @CookieParam("usuarioId") String uid) {
         Usuario u = sessaoService.usuarioLogado(uid).orElse(null);
         List<Vaga> lista = vagaBO.buscar(q);
-        return Response.ok(Templates.vagas(lista, u, q)).type(MediaType.TEXT_HTML).build();
+        return Response.ok(Templates.vagaVisaoGeral(lista, u, q)).type(MediaType.TEXT_HTML).build();
     }
 
     @GET
@@ -49,7 +49,7 @@ public class VagasController {
         Usuario u = sessaoService.usuarioLogado(uid).orElse(null);
         try {
             Vaga v = vagaBO.buscar(id);
-            return Response.ok(Templates.detalhe(v, u, erro, msg)).type(MediaType.TEXT_HTML).build();
+            return Response.ok(Templates.vagaDetalhe(v, u, erro, msg)).type(MediaType.TEXT_HTML).build();
         } catch (IllegalArgumentException e) {
             return Response.seeOther(URI.create("/vagas/visao-geral")).build();
         }

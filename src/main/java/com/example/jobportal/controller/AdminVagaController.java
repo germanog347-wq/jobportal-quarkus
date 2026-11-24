@@ -24,10 +24,10 @@ public class AdminVagaController {
     @Inject
     SessaoService sessaoService;
 
-    @CheckedTemplate(basePath = "AdminController")
+    @CheckedTemplate(basePath = "")
     public static class Templates {
-        public static native TemplateInstance painel(List<Vaga> vagas, Usuario usuario, String msg, String erro);
-        public static native TemplateInstance formVaga(Vaga vaga, String acao, Usuario usuario, String erros);
+        public static native TemplateInstance vagaGestao(List<Vaga> vagas, Usuario usuario, String msg, String erro);
+        public static native TemplateInstance vagaCadastro(Vaga vaga, String acao, Usuario usuario, String erro);
     }
 
     private Response exigirAdmin(String uid) {
@@ -45,7 +45,7 @@ public class AdminVagaController {
         Response r = exigirAdmin(uid);
         if (r != null) return r;
         Usuario u = sessaoService.usuarioLogado(uid).get();
-        return Response.ok(Templates.painel(vagaBO.listarTodas(), u, msg, erro)).type(MediaType.TEXT_HTML).build();
+        return Response.ok(Templates.vagaGestao(vagaBO.listarTodas(), u, msg, erro)).type(MediaType.TEXT_HTML).build();
     }
 
     @GET
@@ -57,7 +57,7 @@ public class AdminVagaController {
         Usuario u = sessaoService.usuarioLogado(uid).get();
         Vaga v = new Vaga();
         v.setAtiva(true);
-        return Response.ok(Templates.formVaga(v, "/vagas/salvar", u, null)).type(MediaType.TEXT_HTML).build();
+        return Response.ok(Templates.vagaCadastro(v, "/vagas/salvar", u, null)).type(MediaType.TEXT_HTML).build();
     }
 
     @GET
@@ -69,7 +69,7 @@ public class AdminVagaController {
         Usuario u = sessaoService.usuarioLogado(uid).get();
         try {
             Vaga v = vagaBO.buscar(id);
-            return Response.ok(Templates.formVaga(v, "/vagas/atualizar/" + id, u, null))
+            return Response.ok(Templates.vagaCadastro(v, "/vagas/atualizar/" + id, u, null))
                     .type(MediaType.TEXT_HTML).build();
         } catch (IllegalArgumentException e) {
             return Response.seeOther(URI.create("/vagas/gestao?erro=" + enc(e.getMessage()))).build();
@@ -88,7 +88,7 @@ public class AdminVagaController {
             return Response.seeOther(URI.create("/vagas/gestao?msg=" + enc("Vaga criada"))).build();
         } catch (IllegalArgumentException e) {
             Vaga v = new Vaga(dto);
-            return Response.ok(Templates.formVaga(v, "/vagas/salvar", u, e.getMessage()))
+            return Response.ok(Templates.vagaCadastro(v, "/vagas/salvar", u, e.getMessage()))
                     .type(MediaType.TEXT_HTML).build();
         }
     }
@@ -106,7 +106,7 @@ public class AdminVagaController {
             return Response.seeOther(URI.create("/vagas/gestao?msg=" + enc("Vaga atualizada"))).build();
         } catch (IllegalArgumentException e) {
             Vaga v = vagaBO.buscar(id);
-            return Response.ok(Templates.formVaga(v, "/vagas/atualizar/" + id, u, e.getMessage()))
+            return Response.ok(Templates.vagaCadastro(v, "/vagas/atualizar/" + id, u, e.getMessage()))
                     .type(MediaType.TEXT_HTML).build();
         }
     }

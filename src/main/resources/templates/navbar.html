@@ -1,21 +1,21 @@
 <nav class="navbar">
     <a class="brand" href="/homepage">Portal<span>Vagas</span></a>
-    <a href="/homepage">Home</a>
+    <a href="/homepage">Início</a>
     <a href="/vagas/visao-geral">Vagas</a>
     <a href="/sobre">Sobre</a>
     {#if usuario}
-        <a href="/candidaturas/minhas">Candidaturas</a>
-        <a href="/usuario/perfil">Perfil</a>
+        <a href="/candidaturas/minhas">Minhas candidaturas</a>
+        <a href="/usuario/perfil">Meu perfil</a>
         {#if usuario.tipo == TipoUsuario:ADMIN}
-            <a href="/vagas/gestao">Admin</a>
+            <a href="/vagas/gestao">Gestão de vagas</a>
+            <a href="/candidaturas/gestao">Gestão de candidaturas</a>
             <a href="/usuario/visao-geral">Usuários</a>
-            <a href="/candidaturas/gestao">Gestão</a>
-            <a href="/logs">Auditoria</a>
+            <a href="/logs">Logs</a>
         {/if}
         <span class="user-chip">{usuario.nome}</span>
         <a class="btn-nav" href="/auth/logout">Sair</a>
     {#else}
-        <a href="/auth/login" style="margin-left:auto">Login</a>
-        <a class="btn-nav" href="/usuario/cadastro">Cadastro</a>
+        <a href="/auth/login">Entrar</a>
+        <a class="btn-nav" href="/usuario/cadastro">Criar conta</a>
     {/if}
 </nav>
