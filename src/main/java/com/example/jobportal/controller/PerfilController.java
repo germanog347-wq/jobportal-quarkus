@@ -6,6 +6,7 @@ import com.example.jobportal.model.Usuario;
 import com.example.jobportal.service.SessaoService;
 import io.quarkus.qute.CheckedTemplate;
 import io.quarkus.qute.TemplateInstance;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
@@ -13,6 +14,7 @@ import jakarta.ws.rs.core.Response;
 import java.net.URI;
 
 @Path("/usuario")
+@RolesAllowed({ "USUARIO", "ADMIN" })
 public class PerfilController {
 
     @Inject
@@ -28,27 +30,16 @@ public class PerfilController {
     @GET
     @Path("/perfil")
     @Produces(MediaType.TEXT_HTML)
-    public Response pagina(@QueryParam("erro") String erro,
-                           @QueryParam("msg") String msg,
-                           @CookieParam("usuarioId") String uid) {
-        Usuario u = sessaoService.usuarioLogado(uid).orElse(null);
-        if (u == null) {
-            return Response.seeOther(URI.create("/auth/login?erro=" + enc("Faça login"))).build();
-        }
-        // Recarrega do banco para ter dados atualizados
-        u = usuarioBO.buscarPorId(u.getId()).orElse(u);
+    public Response pagina(@QueryParam("erro") String erro, @QueryParam("msg") String msg) {
+        Usuario u = sessaoService.usuarioObrigatorio();
         return Response.ok(Templates.usuarioPerfil(u, erro, msg)).type(MediaType.TEXT_HTML).build();
     }
 
     @POST
     @Path("/atualizar")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    public Response atualizar(@BeanParam PerfilUpdateDTO dto,
-                              @CookieParam("usuarioId") String uid) {
-        Usuario u = sessaoService.usuarioLogado(uid).orElse(null);
-        if (u == null) {
-            return Response.seeOther(URI.create("/auth/login")).build();
-        }
+    public Response atualizar(@BeanParam PerfilUpdateDTO dto) {
+        Usuario u = sessaoService.usuarioObrigatorio();
         try {
             usuarioBO.atualizarPerfil(u.getId(), dto);
             return Response.seeOther(URI.create("/usuario/perfil?msg=" + enc("Perfil atualizado com sucesso"))).build();

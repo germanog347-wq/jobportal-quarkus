@@ -1,56 +1,60 @@
 package com.example.jobportal.service;
 
 import com.example.jobportal.dao.UsuarioDAO;
-import com.example.jobportal.model.TipoUsuario;
+import com.example.jobportal.filter.ResponseFilter;
 import com.example.jobportal.model.Usuario;
-import jakarta.enterprise.context.ApplicationScoped;
+import io.quarkus.security.UnauthorizedException;
+import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.core.NewCookie;
+import org.eclipse.microprofile.jwt.JsonWebToken;
+
 import java.util.Optional;
 
-@ApplicationScoped
+/**
+ * Identifica o usuário logado a partir do JWT lido do cookie "jwt-token".
+ */
+@RequestScoped
 public class SessaoService {
 
-    public static final String COOKIE_NAME = "usuarioId";
-    private static final int MAX_AGE = 8 * 60 * 60; // 8 horas
+    @Inject
+    JsonWebToken jwt;
 
     @Inject
     UsuarioDAO usuarioDAO;
 
-    public Optional<Usuario> usuarioLogado(String usuarioIdStr) {
-        if (usuarioIdStr == null || usuarioIdStr.isBlank()) {
-            return Optional.empty();
-        }
+    /** Usuário do token, se houver token válido e o usuário ainda existir e estiver ativo. */
+    public Optional<Usuario> usuarioLogado() {
         try {
-            Integer id = Integer.parseInt(usuarioIdStr.trim());
-            return usuarioDAO.buscarPorId(id).filter(Usuario::isAtivo);
-        } catch (NumberFormatException e) {
+            if (jwt == null || jwt.getRawToken() == null) {
+                return Optional.empty();
+            }
+            Object id = jwt.getClaim("id");
+            if (id == null) {
+                return Optional.empty();
+            }
+            return usuarioDAO.buscarPorId(Integer.parseInt(id.toString()))
+                    .filter(Usuario::isAtivo);
+        } catch (RuntimeException e) {
+            // Token vencido/inválido: em páginas públicas tratamos como visitante
             return Optional.empty();
         }
     }
 
-    /** Cookie HttpOnly + SameSite=Lax — não acessível via JS (mais seguro). */
-    public NewCookie cookieLogin(Integer usuarioId) {
-        return new NewCookie.Builder(COOKIE_NAME)
-                .value(String.valueOf(usuarioId))
-                .path("/")
-                .maxAge(MAX_AGE)
-                .httpOnly(true)
-                .sameSite(NewCookie.SameSite.LAX)
-                .build();
+    /** Usuário do token; usado em endpoints protegidos por @RolesAllowed. */
+    public Usuario usuarioObrigatorio() {
+        return usuarioLogado().orElseThrow(UnauthorizedException::new);
     }
 
-    public NewCookie cookieLogout() {
-        return new NewCookie.Builder(COOKIE_NAME)
+    /** Cookie que apaga o JWT do navegador (logout). */
+    public static NewCookie cookieLogout() {
+        return new NewCookie.Builder(ResponseFilter.COOKIE_JWT)
                 .value("")
                 .path("/")
                 .maxAge(0)
+                .secure(false)
                 .httpOnly(true)
                 .sameSite(NewCookie.SameSite.LAX)
                 .build();
-    }
-
-    public boolean isAdmin(String usuarioIdStr) {
-        return usuarioLogado(usuarioIdStr).map(u -> u.getTipo() == TipoUsuario.ADMIN).orElse(false);
     }
 }

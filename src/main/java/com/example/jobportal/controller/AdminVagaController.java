@@ -2,12 +2,12 @@ package com.example.jobportal.controller;
 
 import com.example.jobportal.bo.VagaBO;
 import com.example.jobportal.dto.VagaDTO;
-import com.example.jobportal.model.TipoUsuario;
 import com.example.jobportal.model.Usuario;
 import com.example.jobportal.model.Vaga;
 import com.example.jobportal.service.SessaoService;
 import io.quarkus.qute.CheckedTemplate;
 import io.quarkus.qute.TemplateInstance;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
@@ -17,6 +17,7 @@ import java.util.List;
 
 /** Gestão de vagas (somente admin). */
 @Path("/vagas")
+@RolesAllowed({ "ADMIN" })
 public class AdminVagaController {
 
     @Inject
@@ -30,31 +31,19 @@ public class AdminVagaController {
         public static native TemplateInstance vagaCadastro(Vaga vaga, String acao, Usuario usuario, String erro);
     }
 
-    private Response exigirAdmin(String uid) {
-        Usuario u = sessaoService.usuarioLogado(uid).orElse(null);
-        if (u == null) return Response.seeOther(URI.create("/auth/login?erro=" + enc("Faça login"))).build();
-        if (u.getTipo() != TipoUsuario.ADMIN) return Response.seeOther(URI.create("/homepage?erro=" + enc("Acesso negado"))).build();
-        return null;
-    }
-
     @GET
     @Path("/gestao")
     @Produces(MediaType.TEXT_HTML)
-    public Response painel(@QueryParam("msg") String msg, @QueryParam("erro") String erro,
-                           @CookieParam("usuarioId") String uid) {
-        Response r = exigirAdmin(uid);
-        if (r != null) return r;
-        Usuario u = sessaoService.usuarioLogado(uid).get();
+    public Response painel(@QueryParam("msg") String msg, @QueryParam("erro") String erro) {
+        Usuario u = sessaoService.usuarioObrigatorio();
         return Response.ok(Templates.vagaGestao(vagaBO.listarTodas(), u, msg, erro)).type(MediaType.TEXT_HTML).build();
     }
 
     @GET
     @Path("/cadastro")
     @Produces(MediaType.TEXT_HTML)
-    public Response nova(@CookieParam("usuarioId") String uid) {
-        Response r = exigirAdmin(uid);
-        if (r != null) return r;
-        Usuario u = sessaoService.usuarioLogado(uid).get();
+    public Response nova() {
+        Usuario u = sessaoService.usuarioObrigatorio();
         Vaga v = new Vaga();
         v.setAtiva(true);
         return Response.ok(Templates.vagaCadastro(v, "/vagas/salvar", u, null)).type(MediaType.TEXT_HTML).build();
@@ -63,10 +52,8 @@ public class AdminVagaController {
     @GET
     @Path("/editar/{id}")
     @Produces(MediaType.TEXT_HTML)
-    public Response editar(@PathParam("id") Integer id, @CookieParam("usuarioId") String uid) {
-        Response r = exigirAdmin(uid);
-        if (r != null) return r;
-        Usuario u = sessaoService.usuarioLogado(uid).get();
+    public Response editar(@PathParam("id") Integer id) {
+        Usuario u = sessaoService.usuarioObrigatorio();
         try {
             Vaga v = vagaBO.buscar(id);
             return Response.ok(Templates.vagaCadastro(v, "/vagas/atualizar/" + id, u, null))
@@ -79,10 +66,8 @@ public class AdminVagaController {
     @POST
     @Path("/salvar")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    public Response salvar(@BeanParam VagaDTO dto, @CookieParam("usuarioId") String uid) {
-        Response r = exigirAdmin(uid);
-        if (r != null) return r;
-        Usuario u = sessaoService.usuarioLogado(uid).get();
+    public Response salvar(@BeanParam VagaDTO dto) {
+        Usuario u = sessaoService.usuarioObrigatorio();
         try {
             vagaBO.criar(dto, u);
             return Response.seeOther(URI.create("/vagas/gestao?msg=" + enc("Vaga criada"))).build();
@@ -96,11 +81,8 @@ public class AdminVagaController {
     @POST
     @Path("/atualizar/{id}")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    public Response atualizar(@PathParam("id") Integer id, @BeanParam VagaDTO dto,
-                              @CookieParam("usuarioId") String uid) {
-        Response r = exigirAdmin(uid);
-        if (r != null) return r;
-        Usuario u = sessaoService.usuarioLogado(uid).get();
+    public Response atualizar(@PathParam("id") Integer id, @BeanParam VagaDTO dto) {
+        Usuario u = sessaoService.usuarioObrigatorio();
         try {
             vagaBO.atualizar(id, dto, u);
             return Response.seeOther(URI.create("/vagas/gestao?msg=" + enc("Vaga atualizada"))).build();
@@ -113,10 +95,8 @@ public class AdminVagaController {
 
     @POST
     @Path("/excluir/{id}")
-    public Response excluir(@PathParam("id") Integer id, @CookieParam("usuarioId") String uid) {
-        Response r = exigirAdmin(uid);
-        if (r != null) return r;
-        Usuario u = sessaoService.usuarioLogado(uid).get();
+    public Response excluir(@PathParam("id") Integer id) {
+        Usuario u = sessaoService.usuarioObrigatorio();
         try {
             vagaBO.excluir(id, u);
             return Response.seeOther(URI.create("/vagas/gestao?msg=" + enc("Vaga excluída"))).build();

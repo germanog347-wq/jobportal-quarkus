@@ -2,10 +2,11 @@ package com.example.jobportal.controller;
 
 import com.example.jobportal.bo.UsuarioBO;
 import com.example.jobportal.dto.CadastroDTO;
+import com.example.jobportal.filter.ResponseFilter;
 import com.example.jobportal.model.Usuario;
-import com.example.jobportal.service.SessaoService;
 import io.quarkus.qute.CheckedTemplate;
 import io.quarkus.qute.TemplateInstance;
+import jakarta.annotation.security.PermitAll;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
@@ -13,12 +14,11 @@ import jakarta.ws.rs.core.Response;
 import java.net.URI;
 
 @Path("/usuario")
+@PermitAll
 public class CadastroController {
 
     @Inject
     UsuarioBO usuarioBO;
-    @Inject
-    SessaoService sessaoService;
 
     @CheckedTemplate(basePath = "")
     public static class Templates {
@@ -40,8 +40,9 @@ public class CadastroController {
         if (!r.sucesso) {
             return Response.seeOther(URI.create("/usuario/cadastro?erro=" + enc(r.mensagem))).build();
         }
+        // Já entra logado: o ResponseFilter converte o header em cookie
         return Response.seeOther(URI.create("/homepage"))
-                .cookie(sessaoService.cookieLogin(r.usuario.getId()))
+                .header(ResponseFilter.HEADER_JWT, usuarioBO.gerarJWT(r.usuario))
                 .build();
     }
 

@@ -4,8 +4,8 @@ import com.example.jobportal.model.Usuario;
 import com.example.jobportal.service.SessaoService;
 import io.quarkus.qute.CheckedTemplate;
 import io.quarkus.qute.TemplateInstance;
+import jakarta.annotation.security.PermitAll;
 import jakarta.inject.Inject;
-import jakarta.ws.rs.CookieParam;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
@@ -13,6 +13,7 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
 @Path("/sobre")
+@PermitAll
 public class SobreController {
 
     @Inject
@@ -25,8 +26,8 @@ public class SobreController {
 
     @GET
     @Produces(MediaType.TEXT_HTML)
-    public Response pagina(@CookieParam("usuarioId") String usuarioIdStr) {
-        Usuario u = sessaoService.usuarioLogado(usuarioIdStr).orElse(null);
+    public Response pagina() {
+        Usuario u = sessaoService.usuarioLogado().orElse(null);
         return Response.ok(Templates.sobre(u)).type(MediaType.TEXT_HTML).build();
     }
 }

@@ -9,6 +9,7 @@
 <body>
 {#include navbar.html /}
 <main class="container">
+    {#if erro}<div class="alert alert-erro">{erro}</div>{/if}
     <section class="hero">
         <h1>Encontre sua próxima oportunidade</h1>
         <p>Portal de vagas com Quarkus e MySQL. Candidate-se online e acompanhe o status das suas candidaturas.</p>

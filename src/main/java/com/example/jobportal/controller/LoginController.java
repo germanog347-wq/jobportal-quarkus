@@ -7,6 +7,7 @@ import com.example.jobportal.model.Usuario;
 import com.example.jobportal.service.SessaoService;
 import io.quarkus.qute.CheckedTemplate;
 import io.quarkus.qute.TemplateInstance;
+import jakarta.annotation.security.PermitAll;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
@@ -15,6 +16,7 @@ import java.net.URI;
 import java.util.Optional;
 
 @Path("/auth")
+@PermitAll
 public class LoginController {
 
     @Inject
@@ -30,38 +32,27 @@ public class LoginController {
     @GET
     @Path("/login")
     @Produces(MediaType.TEXT_HTML)
-    public Response login(@QueryParam("erro") String erro,
-                          @QueryParam("msg") String msg,
-                          @CookieParam("usuarioId") String usuarioIdStr) {
-        Optional<Usuario> logado = sessaoService.usuarioLogado(usuarioIdStr);
+    public Response login(@QueryParam("erro") String erro, @QueryParam("msg") String msg) {
+        Optional<Usuario> logado = sessaoService.usuarioLogado();
         if (logado.isPresent()) {
             return Response.seeOther(URI.create(logado.get().getTipo() == TipoUsuario.ADMIN ? "/vagas/gestao" : "/homepage")).build();
         }
         return Response.ok(Templates.login(null, erro, msg)).type(MediaType.TEXT_HTML).build();
     }
 
+    /** O BO valida as credenciais e devolve o JWT no header; o ResponseFilter grava o cookie. */
     @POST
     @Path("/login")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     public Response fazerLogin(@BeanParam LoginDTO dto) {
-        UsuarioBO.Resultado r = usuarioBO.autenticar(dto);
-        if (!r.sucesso) {
-            return Response.seeOther(URI.create("/auth/login?erro=" + enc(r.mensagem))).build();
-        }
-        return Response.seeOther(URI.create("/homepage"))
-                .cookie(sessaoService.cookieLogin(r.usuario.getId()))
-                .build();
+        return usuarioBO.autenticar(dto);
     }
 
     @GET
     @Path("/logout")
     public Response logout() {
         return Response.seeOther(URI.create("/homepage"))
-                .cookie(sessaoService.cookieLogout())
+                .cookie(SessaoService.cookieLogout())
                 .build();
-    }
-
-    private static String enc(String v) {
-        return v == null ? "" : java.net.URLEncoder.encode(v, java.nio.charset.StandardCharsets.UTF_8);
     }
 }

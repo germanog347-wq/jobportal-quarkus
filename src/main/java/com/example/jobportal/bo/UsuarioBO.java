@@ -4,16 +4,28 @@ import com.example.jobportal.dao.UsuarioDAO;
 import com.example.jobportal.dto.CadastroDTO;
 import com.example.jobportal.dto.LoginDTO;
 import com.example.jobportal.dto.PerfilUpdateDTO;
+import com.example.jobportal.filter.ResponseFilter;
 import com.example.jobportal.model.TipoUsuario;
 import com.example.jobportal.model.Usuario;
+import io.smallrye.jwt.build.Jwt;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import jakarta.ws.rs.core.Response;
+
+import java.net.URI;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.time.Duration;
 import java.time.LocalDate;
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Optional;
 
 @ApplicationScoped
 public class UsuarioBO {
+
+    // Deve coincidir com mp.jwt.verify.issuer em application.properties
+    private static final String ISSUER = "http://localhost/jobportal";
 
     @Inject
     UsuarioDAO usuarioDAO;
@@ -40,19 +52,46 @@ public class UsuarioBO {
         }
     }
 
-    public Resultado autenticar(LoginDTO dto) {
+    /**
+     * Valida as credenciais e, se corretas, devolve o JWT no header "jwt-token".
+     * O ResponseFilter transforma esse header no cookie HttpOnly.
+     */
+    public Response autenticar(LoginDTO dto) {
         if (dto.email == null || dto.email.isBlank() || dto.senha == null || dto.senha.isBlank()) {
-            return Resultado.erro("E-mail e senha são obrigatórios");
+            return redirecionarLogin("E-mail e senha são obrigatórios");
         }
         Optional<Usuario> opt = usuarioDAO.buscarPorEmailESenha(
                 dto.email.trim().toLowerCase(), dto.senha);
         if (opt.isEmpty()) {
             auditoriaBO.registrar("LOGIN_FALHA", "Tentativa inválida", dto.email);
-            return Resultado.erro("Credenciais inválidas");
+            return redirecionarLogin("Credenciais inválidas");
         }
         Usuario u = opt.get();
         auditoriaBO.registrar("LOGIN", "Login realizado", u.getEmail());
-        return Resultado.ok(u);
+
+        String token = gerarJWT(u);
+        String destino = u.getTipo() == TipoUsuario.ADMIN ? "/vagas/gestao" : "/homepage";
+        return Response.seeOther(URI.create(destino))
+                .header(ResponseFilter.HEADER_JWT, token)
+                .build();
+    }
+
+    /** Gera o token assinado com privateKey.pem; o perfil vai em "groups" para o @RolesAllowed. */
+    public String gerarJWT(Usuario usuario) {
+        return Jwt
+                .issuer(ISSUER)
+                .upn(usuario.getEmail())
+                .groups(usuario.getTipo().name())
+                .claim("id", usuario.getId())
+                .claim("nome", usuario.getNome())
+                .claim("data", ZonedDateTime.now().toString())
+                .expiresIn(Duration.ofSeconds(ResponseFilter.VALIDADE_SEGUNDOS))
+                .sign();
+    }
+
+    private static Response redirecionarLogin(String mensagem) {
+        return Response.seeOther(URI.create("/auth/login?erro="
+                + URLEncoder.encode(mensagem, StandardCharsets.UTF_8))).build();
     }
 
     public Resultado cadastrar(CadastroDTO dto) {

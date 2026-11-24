@@ -12,3 +12,6 @@ Thumbs.db
 
 # Logs
 *.log
+
+# Projeto de referência (não faz parte do código)
+pasta exemplo/

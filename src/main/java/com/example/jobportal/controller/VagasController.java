@@ -7,6 +7,8 @@ import com.example.jobportal.model.Vaga;
 import com.example.jobportal.service.SessaoService;
 import io.quarkus.qute.CheckedTemplate;
 import io.quarkus.qute.TemplateInstance;
+import jakarta.annotation.security.PermitAll;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
@@ -33,8 +35,9 @@ public class VagasController {
     @GET
     @Path("/visao-geral")
     @Produces(MediaType.TEXT_HTML)
-    public Response listar(@QueryParam("q") String q, @CookieParam("usuarioId") String uid) {
-        Usuario u = sessaoService.usuarioLogado(uid).orElse(null);
+    @PermitAll
+    public Response listar(@QueryParam("q") String q) {
+        Usuario u = sessaoService.usuarioLogado().orElse(null);
         List<Vaga> lista = vagaBO.buscar(q);
         return Response.ok(Templates.vagaVisaoGeral(lista, u, q)).type(MediaType.TEXT_HTML).build();
     }
@@ -42,11 +45,11 @@ public class VagasController {
     @GET
     @Path("/detalhe/{id}")
     @Produces(MediaType.TEXT_HTML)
+    @PermitAll
     public Response detalhe(@PathParam("id") Integer id,
                             @QueryParam("erro") String erro,
-                            @QueryParam("msg") String msg,
-                            @CookieParam("usuarioId") String uid) {
-        Usuario u = sessaoService.usuarioLogado(uid).orElse(null);
+                            @QueryParam("msg") String msg) {
+        Usuario u = sessaoService.usuarioLogado().orElse(null);
         try {
             Vaga v = vagaBO.buscar(id);
             return Response.ok(Templates.vagaDetalhe(v, u, erro, msg)).type(MediaType.TEXT_HTML).build();
@@ -58,13 +61,9 @@ public class VagasController {
     @POST
     @Path("/candidatar/{id}")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    public Response candidatar(@PathParam("id") Integer id,
-                               @FormParam("mensagem") String mensagem,
-                               @CookieParam("usuarioId") String uid) {
-        Usuario u = sessaoService.usuarioLogado(uid).orElse(null);
-        if (u == null) {
-            return Response.seeOther(URI.create("/auth/login?erro=" + enc("Faça login para se candidatar"))).build();
-        }
+    @RolesAllowed({ "USUARIO", "ADMIN" })
+    public Response candidatar(@PathParam("id") Integer id, @FormParam("mensagem") String mensagem) {
+        Usuario u = sessaoService.usuarioObrigatorio();
         try {
             candidaturaBO.candidatar(id, mensagem, u);
             return Response.seeOther(URI.create("/vagas/detalhe/" + id + "?msg=" + enc("Candidatura enviada!"))).build();
