@@ -22,6 +22,13 @@ public class DataSeeder {
 
     @Transactional
     void onStart(@Observes StartupEvent event) {
+        // Bancos antigos podem ter senhas em texto puro: salvar() as criptografa
+        for (Usuario u : usuarioDAO.listarTodos()) {
+            if (!usuarioDAO.estaCriptografada(u.getSenha())) {
+                usuarioDAO.salvar(u);
+            }
+        }
+
         if (usuarioDAO.contar() == 0) {
             Usuario admin = new Usuario();
             admin.setNome("Administrador");

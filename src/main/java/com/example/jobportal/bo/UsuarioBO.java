@@ -60,7 +60,7 @@ public class UsuarioBO {
         if (dto.email == null || dto.email.isBlank() || dto.senha == null || dto.senha.isBlank()) {
             return redirecionarLogin("E-mail e senha são obrigatórios");
         }
-        Optional<Usuario> opt = usuarioDAO.buscarPorEmailESenha(
+        Optional<Usuario> opt = usuarioDAO.autenticar(
                 dto.email.trim().toLowerCase(), dto.senha);
         if (opt.isEmpty()) {
             auditoriaBO.registrar("LOGIN_FALHA", "Tentativa inválida", dto.email);
