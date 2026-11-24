@@ -37,7 +37,7 @@ public class VagasController {
     @Produces(MediaType.TEXT_HTML)
     @PermitAll
     public Response listar(@QueryParam("q") String q) {
-        Usuario u = sessaoService.usuarioLogado().orElse(null);
+        Usuario u = sessaoService.usuarioLogado();
         List<Vaga> lista = vagaBO.buscar(q);
         return Response.ok(Templates.vagaVisaoGeral(lista, u, q)).type(MediaType.TEXT_HTML).build();
     }
@@ -49,7 +49,7 @@ public class VagasController {
     public Response detalhe(@PathParam("id") Integer id,
                             @QueryParam("erro") String erro,
                             @QueryParam("msg") String msg) {
-        Usuario u = sessaoService.usuarioLogado().orElse(null);
+        Usuario u = sessaoService.usuarioLogado();
         try {
             Vaga v = vagaBO.buscar(id);
             boolean jaCandidatou = candidaturaBO.jaCandidatou(u, id);

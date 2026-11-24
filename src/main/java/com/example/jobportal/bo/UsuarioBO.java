@@ -17,7 +17,6 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.time.ZonedDateTime;
 import java.util.List;
-import java.util.Optional;
 
 @ApplicationScoped
 public class UsuarioBO {
@@ -59,13 +58,11 @@ public class UsuarioBO {
         if (dto.email == null || dto.email.isBlank() || dto.senha == null || dto.senha.isBlank()) {
             throw new IllegalArgumentException("E-mail e senha são obrigatórios");
         }
-        Optional<Usuario> opt = usuarioDAO.autenticar(
-                dto.email.trim().toLowerCase(), dto.senha);
-        if (opt.isEmpty()) {
+        Usuario u = usuarioDAO.autenticar(dto.email.trim().toLowerCase(), dto.senha);
+        if (u == null) {
             auditoriaBO.registrar("LOGIN_FALHA", "Tentativa inválida", dto.email);
             throw new IllegalArgumentException("Credenciais inválidas");
         }
-        Usuario u = opt.get();
         auditoriaBO.registrar("LOGIN", "Login realizado", u.getEmail());
 
         String token = gerarJWT(u);
@@ -138,8 +135,10 @@ public class UsuarioBO {
     }
 
     public void atualizarPerfil(Integer id, PerfilUpdateDTO dto) {
-        Usuario u = usuarioDAO.buscarPorId(id)
-                .orElseThrow(() -> new IllegalArgumentException("Usuário não encontrado"));
+        Usuario u = usuarioDAO.buscarPorId(id);
+        if (u == null) {
+            throw new IllegalArgumentException("Usuário não encontrado");
+        }
 
         if (dto.nome != null && !dto.nome.isBlank()) {
             u.setNome(dto.nome.trim());
@@ -187,21 +186,25 @@ public class UsuarioBO {
         return usuarioDAO.listarTodos();
     }
 
-    public Optional<Usuario> buscarPorId(Integer id) {
+    public Usuario buscarPorId(Integer id) {
         return usuarioDAO.buscarPorId(id);
     }
 
     public void promover(Integer id, String adminEmail) {
-        Usuario u = usuarioDAO.buscarPorId(id)
-                .orElseThrow(() -> new IllegalArgumentException("Não encontrado"));
+        Usuario u = usuarioDAO.buscarPorId(id);
+        if (u == null) {
+            throw new IllegalArgumentException("Usuário não encontrado");
+        }
         u.setTipo(TipoUsuario.ADMIN);
         usuarioDAO.salvar(u);
         auditoriaBO.registrar("PROMOVER", "Promoveu " + u.getEmail(), adminEmail);
     }
 
     public void rebaixar(Integer id, String adminEmail) {
-        Usuario u = usuarioDAO.buscarPorId(id)
-                .orElseThrow(() -> new IllegalArgumentException("Não encontrado"));
+        Usuario u = usuarioDAO.buscarPorId(id);
+        if (u == null) {
+            throw new IllegalArgumentException("Usuário não encontrado");
+        }
         // Impede o admin de perder o próprio acesso (e o sistema de ficar sem nenhum admin)
         if (u.getEmail().equalsIgnoreCase(adminEmail)) {
             throw new IllegalArgumentException("Você não pode rebaixar a si mesmo");

@@ -36,7 +36,7 @@ public class HomeController {
     @Path("/homepage")
     @Produces(MediaType.TEXT_HTML)
     public Response home(@QueryParam("erro") String erro) {
-        Usuario usuario = sessaoService.usuarioLogado().orElse(null);
+        Usuario usuario = sessaoService.usuarioLogado();
         return Response.ok(Templates.homepage(usuario, erro)).type(MediaType.TEXT_HTML).build();
     }
 }

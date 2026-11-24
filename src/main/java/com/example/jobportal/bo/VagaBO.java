@@ -26,8 +26,11 @@ public class VagaBO {
     public List<Vaga> listarTodas() { return vagaDAO.listarTodas(); }
 
     public Vaga buscar(Integer id) {
-        return vagaDAO.buscarPorId(id)
-                .orElseThrow(() -> new IllegalArgumentException("Vaga não encontrada"));
+        Vaga vaga = vagaDAO.buscarPorId(id);
+        if (vaga == null) {
+            throw new IllegalArgumentException("Vaga não encontrada");
+        }
+        return vaga;
     }
 
     public Vaga criar(VagaDTO dto, Usuario admin) {

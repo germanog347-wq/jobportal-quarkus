@@ -6,7 +6,6 @@ import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 import java.util.List;
-import java.util.Optional;
 
 @ApplicationScoped
 public class VagaDAO {
@@ -14,8 +13,9 @@ public class VagaDAO {
     @Inject
     EntityManager em;
 
-    public Optional<Vaga> buscarPorId(Integer id) {
-        return Optional.ofNullable(em.find(Vaga.class, id));
+    /** Retorna a vaga com o id informado, ou null se não existir. */
+    public Vaga buscarPorId(Integer id) {
+        return em.find(Vaga.class, id);
     }
 
     // Vaga aberta = ativa e com prazo não vencido (o dia da expiração ainda conta)

@@ -23,8 +23,8 @@ public class CandidaturaBO {
 
     public void candidatar(Integer vagaId, String mensagem, Usuario usuario) {
         if (usuario == null) throw new IllegalArgumentException("Faça login");
-        Vaga vaga = vagaDAO.buscarPorId(vagaId)
-                .orElseThrow(() -> new IllegalArgumentException("Vaga não encontrada"));
+        Vaga vaga = vagaDAO.buscarPorId(vagaId);
+        if (vaga == null) throw new IllegalArgumentException("Vaga não encontrada");
         if (!vaga.isAberta()) throw new IllegalArgumentException("Esta vaga não está mais recebendo candidaturas");
         if (candidaturaDAO.existe(usuario.getId(), vagaId))
             throw new IllegalArgumentException("Você já se candidatou a esta vaga");
@@ -52,8 +52,8 @@ public class CandidaturaBO {
     public void atualizarStatus(Integer id, String status, Usuario admin) {
         if (admin == null || admin.getTipo() != TipoUsuario.ADMIN) throw new IllegalArgumentException("Acesso restrito");
         StatusCandidatura novoStatus = converterStatus(status);
-        Candidatura c = candidaturaDAO.buscarPorId(id)
-                .orElseThrow(() -> new IllegalArgumentException("Candidatura não encontrada"));
+        Candidatura c = candidaturaDAO.buscarPorId(id);
+        if (c == null) throw new IllegalArgumentException("Candidatura não encontrada");
         c.setStatus(novoStatus);
         candidaturaDAO.salvar(c);
         auditoriaBO.registrar("STATUS_CANDIDATURA", "Status " + novoStatus + " id=" + id, admin.getEmail());

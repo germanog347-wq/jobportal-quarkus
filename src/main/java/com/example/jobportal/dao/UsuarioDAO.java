@@ -4,6 +4,7 @@ import com.example.jobportal.model.Usuario;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.NoResultException;
 import jakarta.transaction.Transactional;
 
 import javax.crypto.SecretKeyFactory;
@@ -13,7 +14,6 @@ import java.security.MessageDigest;
 import java.security.SecureRandom;
 import java.util.Base64;
 import java.util.List;
-import java.util.Optional;
 
 @ApplicationScoped
 public class UsuarioDAO {
@@ -26,25 +26,32 @@ public class UsuarioDAO {
     private static final int TAMANHO_SALT = 16;
     private static final int TAMANHO_HASH = 256;
 
-    public Optional<Usuario> buscarPorId(Integer id) {
-        return Optional.ofNullable(em.find(Usuario.class, id));
+    /** Retorna o usuário com o id informado, ou null se não existir. */
+    public Usuario buscarPorId(Integer id) {
+        return em.find(Usuario.class, id);
     }
 
-    public Optional<Usuario> buscarPorEmail(String email) {
-        List<Usuario> list = em.createQuery(
-                "SELECT u FROM Usuario u WHERE u.email = :email", Usuario.class)
-                .setParameter("email", email).getResultList();
-        return list.stream().findFirst();
-    }
-
-    /** Retorna o usuário ativo se o e-mail existir e a senha conferir com o hash salvo. */
-    public Optional<Usuario> autenticar(String email, String senha) {
-        if (email == null || senha == null) {
-            return Optional.empty();
+    /** Retorna o usuário com o e-mail informado, ou null se não existir. */
+    public Usuario buscarPorEmail(String email) {
+        try {
+            return em.createQuery("SELECT u FROM Usuario u WHERE u.email = :email", Usuario.class)
+                    .setParameter("email", email)
+                    .getSingleResult();
+        } catch (NoResultException e) {
+            return null;
         }
-        return buscarPorEmail(email)
-                .filter(Usuario::isAtivo)
-                .filter(u -> senhaConfere(senha, u.getSenha()));
+    }
+
+    /** Retorna o usuário ativo se o e-mail existir e a senha conferir com o hash salvo; senão, null. */
+    public Usuario autenticar(String email, String senha) {
+        if (email == null || senha == null) {
+            return null;
+        }
+        Usuario usuario = buscarPorEmail(email);
+        if (usuario == null || !usuario.isAtivo() || !senhaConfere(senha, usuario.getSenha())) {
+            return null;
+        }
+        return usuario;
     }
 
     public List<Usuario> listarTodos() {

@@ -13,7 +13,6 @@ import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import java.net.URI;
-import java.util.Optional;
 
 @Path("/auth")
 @PermitAll
@@ -33,9 +32,9 @@ public class LoginController {
     @Path("/login")
     @Produces(MediaType.TEXT_HTML)
     public Response login(@QueryParam("erro") String erro, @QueryParam("msg") String msg) {
-        Optional<Usuario> logado = sessaoService.usuarioLogado();
-        if (logado.isPresent()) {
-            return Response.seeOther(URI.create(logado.get().getTipo() == TipoUsuario.ADMIN ? "/vagas/gestao" : "/homepage")).build();
+        Usuario logado = sessaoService.usuarioLogado();
+        if (logado != null) {
+            return Response.seeOther(URI.create(logado.getTipo() == TipoUsuario.ADMIN ? "/vagas/gestao" : "/homepage")).build();
         }
         return Response.ok(Templates.login(null, erro, msg, null)).type(MediaType.TEXT_HTML).build();
     }

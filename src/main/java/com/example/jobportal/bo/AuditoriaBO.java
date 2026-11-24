@@ -23,7 +23,7 @@ public class AuditoriaBO {
     public void registrar(String acao, String detalhe, String usuarioEmail) {
         Usuario usuario = null;
         if (usuarioEmail != null && !usuarioEmail.isBlank()) {
-            usuario = usuarioDAO.buscarPorEmail(usuarioEmail.trim().toLowerCase()).orElse(null);
+            usuario = usuarioDAO.buscarPorEmail(usuarioEmail.trim().toLowerCase());
         }
 
         String texto = acao + " - " + detalhe;

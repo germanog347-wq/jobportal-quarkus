@@ -6,7 +6,6 @@ import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 import java.util.List;
-import java.util.Optional;
 
 @ApplicationScoped
 public class CandidaturaDAO {
@@ -14,8 +13,9 @@ public class CandidaturaDAO {
     @Inject
     EntityManager em;
 
-    public Optional<Candidatura> buscarPorId(Integer id) {
-        return Optional.ofNullable(em.find(Candidatura.class, id));
+    /** Retorna a candidatura com o id informado, ou null se não existir. */
+    public Candidatura buscarPorId(Integer id) {
+        return em.find(Candidatura.class, id);
     }
 
     public List<Candidatura> listarPorUsuario(Integer usuarioId) {

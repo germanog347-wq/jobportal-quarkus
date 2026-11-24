@@ -27,7 +27,7 @@ public class SobreController {
     @GET
     @Produces(MediaType.TEXT_HTML)
     public Response pagina() {
-        Usuario u = sessaoService.usuarioLogado().orElse(null);
+        Usuario u = sessaoService.usuarioLogado();
         return Response.ok(Templates.sobre(u)).type(MediaType.TEXT_HTML).build();
     }
 }
