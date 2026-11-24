@@ -13,8 +13,6 @@ import jakarta.inject.Inject;
 import jakarta.ws.rs.core.Response;
 
 import java.net.URI;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.ZonedDateTime;
@@ -55,16 +53,17 @@ public class UsuarioBO {
     /**
      * Valida as credenciais e, se corretas, devolve o JWT no header "jwt-token".
      * O ResponseFilter transforma esse header no cookie HttpOnly.
+     * Se inválidas, lança IllegalArgumentException com a mensagem para a tela de login.
      */
     public Response autenticar(LoginDTO dto) {
         if (dto.email == null || dto.email.isBlank() || dto.senha == null || dto.senha.isBlank()) {
-            return redirecionarLogin("E-mail e senha são obrigatórios");
+            throw new IllegalArgumentException("E-mail e senha são obrigatórios");
         }
         Optional<Usuario> opt = usuarioDAO.autenticar(
                 dto.email.trim().toLowerCase(), dto.senha);
         if (opt.isEmpty()) {
             auditoriaBO.registrar("LOGIN_FALHA", "Tentativa inválida", dto.email);
-            return redirecionarLogin("Credenciais inválidas");
+            throw new IllegalArgumentException("Credenciais inválidas");
         }
         Usuario u = opt.get();
         auditoriaBO.registrar("LOGIN", "Login realizado", u.getEmail());
@@ -89,10 +88,6 @@ public class UsuarioBO {
                 .sign();
     }
 
-    private static Response redirecionarLogin(String mensagem) {
-        return Response.seeOther(URI.create("/auth/login?erro="
-                + URLEncoder.encode(mensagem, StandardCharsets.UTF_8))).build();
-    }
 
     public Resultado cadastrar(CadastroDTO dto) {
         if (dto.nome == null || dto.nome.isBlank()) {
@@ -207,6 +202,10 @@ public class UsuarioBO {
     public void rebaixar(Integer id, String adminEmail) {
         Usuario u = usuarioDAO.buscarPorId(id)
                 .orElseThrow(() -> new IllegalArgumentException("Não encontrado"));
+        // Impede o admin de perder o próprio acesso (e o sistema de ficar sem nenhum admin)
+        if (u.getEmail().equalsIgnoreCase(adminEmail)) {
+            throw new IllegalArgumentException("Você não pode rebaixar a si mesmo");
+        }
         u.setTipo(TipoUsuario.USUARIO);
         usuarioDAO.salvar(u);
         auditoriaBO.registrar("REBAIXAR", "Rebaixou " + u.getEmail(), adminEmail);

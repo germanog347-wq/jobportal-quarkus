@@ -113,6 +113,16 @@ public class Vaga {
         this.ativa = ativa;
     }
 
+    /** true se a data de expiração já passou (o dia da expiração ainda conta como aberto). */
+    public boolean isExpirada() {
+        return dataExpiracao != null && dataExpiracao.isBefore(LocalDate.now());
+    }
+
+    /** true se a vaga está ativa e dentro do prazo, ou seja, recebendo candidaturas. */
+    public boolean isAberta() {
+        return ativa && !isExpirada();
+    }
+
     public LocalDateTime getCriadoEm() {
         return criadoEm;
     }

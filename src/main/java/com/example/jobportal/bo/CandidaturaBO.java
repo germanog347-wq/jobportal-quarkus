@@ -25,7 +25,7 @@ public class CandidaturaBO {
         if (usuario == null) throw new IllegalArgumentException("Faça login");
         Vaga vaga = vagaDAO.buscarPorId(vagaId)
                 .orElseThrow(() -> new IllegalArgumentException("Vaga não encontrada"));
-        if (!vaga.isAtiva()) throw new IllegalArgumentException("Vaga não está ativa");
+        if (!vaga.isAberta()) throw new IllegalArgumentException("Esta vaga não está mais recebendo candidaturas");
         if (candidaturaDAO.existe(usuario.getId(), vagaId))
             throw new IllegalArgumentException("Você já se candidatou a esta vaga");
         Candidatura c = new Candidatura();
@@ -35,6 +35,10 @@ public class CandidaturaBO {
         c.setStatus(StatusCandidatura.ENVIADA);
         candidaturaDAO.salvar(c);
         auditoriaBO.registrar("CANDIDATURA", "Candidatou-se à vaga " + vaga.getTitulo(), usuario.getEmail());
+    }
+
+    public boolean jaCandidatou(Usuario usuario, Integer vagaId) {
+        return usuario != null && candidaturaDAO.existe(usuario.getId(), vagaId);
     }
 
     public List<Candidatura> listarMinhas(Usuario usuario) {

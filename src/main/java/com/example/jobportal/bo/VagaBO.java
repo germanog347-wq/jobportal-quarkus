@@ -1,5 +1,6 @@
 package com.example.jobportal.bo;
 
+import com.example.jobportal.dao.CandidaturaDAO;
 import com.example.jobportal.dao.VagaDAO;
 import com.example.jobportal.dto.VagaDTO;
 import com.example.jobportal.model.TipoUsuario;
@@ -14,6 +15,8 @@ public class VagaBO {
 
     @Inject
     VagaDAO vagaDAO;
+    @Inject
+    CandidaturaDAO candidaturaDAO;
     @Inject
     AuditoriaBO auditoriaBO;
 
@@ -56,6 +59,13 @@ public class VagaBO {
     public void excluir(Integer id, Usuario admin) {
         exigirAdmin(admin);
         Vaga v = buscar(id);
+        long candidaturas = candidaturaDAO.contarPorVaga(id);
+        if (candidaturas > 0) {
+            // Excluir apagaria o histórico dos candidatos; o caminho é desativar a vaga
+            throw new IllegalArgumentException("A vaga \"" + v.getTitulo() + "\" possui " + candidaturas
+                    + (candidaturas == 1 ? " candidatura" : " candidaturas")
+                    + " e não pode ser excluída. Desmarque \"Ativa\" para encerrá-la.");
+        }
         String t = v.getTitulo();
         vagaDAO.remover(id);
         auditoriaBO.registrar("EXCLUIR_VAGA", "Excluiu: " + t, admin.getEmail());

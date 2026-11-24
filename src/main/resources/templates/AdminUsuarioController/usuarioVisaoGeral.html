@@ -27,7 +27,9 @@
                 <td>{u.cidade ?: '—'}</td>
                 <td>{#if u.tipo == TipoUsuario:ADMIN}<span class="badge">Administrador</span>{#else}Candidato{/if}</td>
                 <td>
-                    {#if u.tipo == TipoUsuario:ADMIN}
+                    {#if u.id == usuario.id}
+                    <span class="text-muted text-small">Você</span>
+                    {#else if u.tipo == TipoUsuario:ADMIN}
                     <form method="post" action="/usuario/rebaixar/{u.id}" class="inline-form">
                         <button type="submit" class="btn btn-sm btn-outline">Rebaixar</button>
                     </form>

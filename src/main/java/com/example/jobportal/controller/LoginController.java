@@ -26,7 +26,7 @@ public class LoginController {
 
     @CheckedTemplate
     public static class Templates {
-        public static native TemplateInstance login(Usuario usuario, String erro, String msg);
+        public static native TemplateInstance login(Usuario usuario, String erro, String msg, String email);
     }
 
     @GET
@@ -37,15 +37,23 @@ public class LoginController {
         if (logado.isPresent()) {
             return Response.seeOther(URI.create(logado.get().getTipo() == TipoUsuario.ADMIN ? "/vagas/gestao" : "/homepage")).build();
         }
-        return Response.ok(Templates.login(null, erro, msg)).type(MediaType.TEXT_HTML).build();
+        return Response.ok(Templates.login(null, erro, msg, null)).type(MediaType.TEXT_HTML).build();
     }
 
-    /** O BO valida as credenciais e devolve o JWT no header; o ResponseFilter grava o cookie. */
+    /**
+     * O BO valida as credenciais e devolve o JWT no header; o ResponseFilter grava o cookie.
+     * Em caso de erro a tela é exibida de novo mantendo o e-mail digitado.
+     */
     @POST
     @Path("/login")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     public Response fazerLogin(@BeanParam LoginDTO dto) {
-        return usuarioBO.autenticar(dto);
+        try {
+            return usuarioBO.autenticar(dto);
+        } catch (IllegalArgumentException e) {
+            return Response.ok(Templates.login(null, e.getMessage(), null, dto.email))
+                    .type(MediaType.TEXT_HTML).build();
+        }
     }
 
     @GET

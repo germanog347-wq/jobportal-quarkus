@@ -13,8 +13,10 @@
     {#if msg}<div class="alert alert-msg">{msg}</div>{/if}
 
     <div class="card">
-        {#if vaga.ativa}
+        {#if vaga.aberta}
         <span class="badge">Vaga ativa</span>
+        {#else if vaga.expirada}
+        <span class="badge badge-off">Vaga expirada</span>
         {#else}
         <span class="badge badge-off">Vaga encerrada</span>
         {/if}
@@ -28,7 +30,10 @@
         <p class="vaga-descricao">{vaga.descricao}</p>
 
         <hr class="divider">
-        {#if !vaga.ativa}
+        {#if jaCandidatou}
+        <p>✅ Você já se candidatou a esta vaga. Acompanhe o andamento em
+            <a href="/candidaturas/minhas">Minhas candidaturas</a>.</p>
+        {#else if !vaga.aberta}
         <p class="text-muted">Esta vaga não está mais recebendo candidaturas.</p>
         {#else if usuario}
         <h3>Candidatar-se</h3>

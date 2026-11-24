@@ -29,7 +29,7 @@ public class VagasController {
     @CheckedTemplate
     public static class Templates {
         public static native TemplateInstance vagaVisaoGeral(List<Vaga> vagas, Usuario usuario, String q);
-        public static native TemplateInstance vagaDetalhe(Vaga vaga, Usuario usuario, String erro, String msg);
+        public static native TemplateInstance vagaDetalhe(Vaga vaga, Usuario usuario, boolean jaCandidatou, String erro, String msg);
     }
 
     @GET
@@ -52,7 +52,8 @@ public class VagasController {
         Usuario u = sessaoService.usuarioLogado().orElse(null);
         try {
             Vaga v = vagaBO.buscar(id);
-            return Response.ok(Templates.vagaDetalhe(v, u, erro, msg)).type(MediaType.TEXT_HTML).build();
+            boolean jaCandidatou = candidaturaBO.jaCandidatou(u, id);
+            return Response.ok(Templates.vagaDetalhe(v, u, jaCandidatou, erro, msg)).type(MediaType.TEXT_HTML).build();
         } catch (IllegalArgumentException e) {
             return Response.seeOther(URI.create("/vagas/visao-geral")).build();
         }

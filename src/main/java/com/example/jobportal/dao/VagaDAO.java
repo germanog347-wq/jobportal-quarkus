@@ -18,9 +18,13 @@ public class VagaDAO {
         return Optional.ofNullable(em.find(Vaga.class, id));
     }
 
+    // Vaga aberta = ativa e com prazo não vencido (o dia da expiração ainda conta)
+    private static final String VAGA_ABERTA =
+            "v.ativa = true AND (v.dataExpiracao IS NULL OR v.dataExpiracao >= CURRENT_DATE)";
+
     public List<Vaga> listarAtivas() {
         return em.createQuery(
-                "SELECT v FROM Vaga v WHERE v.ativa = true ORDER BY v.criadoEm DESC", Vaga.class)
+                "SELECT v FROM Vaga v WHERE " + VAGA_ABERTA + " ORDER BY v.criadoEm DESC", Vaga.class)
                 .getResultList();
     }
 
@@ -29,14 +33,14 @@ public class VagaDAO {
                 .getResultList();
     }
 
-    /** Busca por título, empresa, localização ou descrição (apenas ativas). */
+    /** Busca por título, empresa, localização ou descrição (apenas vagas abertas). */
     public List<Vaga> buscar(String termo) {
         if (termo == null || termo.isBlank()) {
             return listarAtivas();
         }
         String t = "%" + termo.trim().toLowerCase() + "%";
         return em.createQuery(
-                "SELECT v FROM Vaga v WHERE v.ativa = true AND (" +
+                "SELECT v FROM Vaga v WHERE " + VAGA_ABERTA + " AND (" +
                 "LOWER(v.titulo) LIKE :t OR LOWER(v.empresa) LIKE :t OR " +
                 "LOWER(v.localizacao) LIKE :t OR LOWER(v.descricao) LIKE :t) " +
                 "ORDER BY v.criadoEm DESC", Vaga.class)

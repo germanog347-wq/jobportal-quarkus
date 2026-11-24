@@ -29,7 +29,7 @@
                 <td>{v.titulo}</td>
                 <td>{v.empresa}</td>
                 <td>{#if v.dataExpiracao}{v.dataExpiracao.formatado}{#else}—{/if}</td>
-                <td>{#if v.ativa}<span class="badge">Ativa</span>{#else}<span class="badge badge-off">Encerrada</span>{/if}</td>
+                <td>{#if !v.ativa}<span class="badge badge-off">Encerrada</span>{#else if v.expirada}<span class="badge badge-off">Expirada</span>{#else}<span class="badge">Ativa</span>{/if}</td>
                 <td>
                     <a class="btn btn-sm btn-outline" href="/vagas/editar/{v.id}">Editar</a>
                     <form method="post" action="/vagas/excluir/{v.id}" class="inline-form" data-confirm="Excluir esta vaga?">

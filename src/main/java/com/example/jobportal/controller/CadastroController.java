@@ -22,14 +22,14 @@ public class CadastroController {
 
     @CheckedTemplate
     public static class Templates {
-        public static native TemplateInstance usuarioCadastro(Usuario usuario, String erro);
+        public static native TemplateInstance usuarioCadastro(Usuario usuario, String erro, CadastroDTO dto);
     }
 
     @GET
     @Path("/cadastro")
     @Produces(MediaType.TEXT_HTML)
     public TemplateInstance pagina(@QueryParam("erro") String erro) {
-        return Templates.usuarioCadastro(null, erro);
+        return Templates.usuarioCadastro(null, erro, new CadastroDTO());
     }
 
     @POST
@@ -38,15 +38,14 @@ public class CadastroController {
     public Response cadastrar(@BeanParam CadastroDTO dto) {
         UsuarioBO.Resultado r = usuarioBO.cadastrar(dto);
         if (!r.sucesso) {
-            return Response.seeOther(URI.create("/usuario/cadastro?erro=" + enc(r.mensagem))).build();
+            // Mostra o formulário de novo com o que foi digitado (exceto a senha)
+            dto.senha = null;
+            return Response.ok(Templates.usuarioCadastro(null, r.mensagem, dto))
+                    .type(MediaType.TEXT_HTML).build();
         }
         // Já entra logado: o ResponseFilter converte o header em cookie
         return Response.seeOther(URI.create("/homepage"))
                 .header(ResponseFilter.HEADER_JWT, usuarioBO.gerarJWT(r.usuario))
                 .build();
-    }
-
-    private static String enc(String v) {
-        return v == null ? "" : java.net.URLEncoder.encode(v, java.nio.charset.StandardCharsets.UTF_8);
     }
 }

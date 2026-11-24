@@ -40,6 +40,13 @@ public class CandidaturaDAO {
         return count > 0;
     }
 
+    public long contarPorVaga(Integer vagaId) {
+        return em.createQuery(
+                "SELECT COUNT(c) FROM Candidatura c WHERE c.vaga.id = :vid", Long.class)
+                .setParameter("vid", vagaId)
+                .getSingleResult();
+    }
+
     @Transactional
     public Candidatura salvar(Candidatura c) {
         if (c.getId() == null) {
