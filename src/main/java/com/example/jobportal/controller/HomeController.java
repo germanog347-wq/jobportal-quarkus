@@ -12,6 +12,8 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
+import java.net.URI;
+
 @Path("/")
 public class HomeController {
 
@@ -24,6 +26,12 @@ public class HomeController {
     }
 
     @GET
+    public Response raiz() {
+        return Response.seeOther(URI.create("/homepage")).build();
+    }
+
+    @GET
+    @Path("/homepage")
     @Produces(MediaType.TEXT_HTML)
     public Response home(@CookieParam("usuarioId") String usuarioIdStr) {
         Usuario usuario = sessaoService.usuarioLogado(usuarioIdStr).orElse(null);

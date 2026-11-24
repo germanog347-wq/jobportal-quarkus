@@ -14,7 +14,7 @@
             <h2>Criar conta</h2>
             <p class="subtitle">Preencha seus dados para se candidatar às vagas.</p>
             {#if erro}<div class="alert alert-erro">{erro}</div>{/if}
-            <form method="post" action="/cadastro">
+            <form method="post" action="/usuario/salvar">
                 <label>Nome completo</label>
                 <input type="text" name="nome" required placeholder="Seu nome">
 
@@ -53,7 +53,7 @@
 
                 <div class="form-actions">
                     <button type="submit" class="btn btn-primary">Cadastrar</button>
-                    <a href="/login" class="btn btn-outline">Já tenho conta</a>
+                    <a href="/auth/login" class="btn btn-outline">Já tenho conta</a>
                 </div>
             </form>
         </div>

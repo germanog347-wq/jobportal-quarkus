@@ -13,7 +13,7 @@
     {#if candidaturas.isEmpty}
         <div class="card empty-state">
             <p>Você ainda não se candidatou a nenhuma vaga.</p>
-            <a href="/vagas" class="btn btn-primary">Ver vagas</a>
+            <a href="/vagas/visao-geral" class="btn btn-primary">Ver vagas</a>
         </div>
     {#else}
     <table>
@@ -23,7 +23,7 @@
         <tbody>
         {#for c in candidaturas}
             <tr>
-                <td><a href="/vagas/{c.vaga.id}">{c.vaga.titulo}</a></td>
+                <td><a href="/vagas/detalhe/{c.vaga.id}">{c.vaga.titulo}</a></td>
                 <td>{c.vaga.empresa}</td>
                 <td><span class="badge">{c.status.descricao}</span></td>
                 <td>{c.criadoEm}</td>

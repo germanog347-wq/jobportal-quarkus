@@ -11,7 +11,7 @@
 <div class="container">
     <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.75rem;margin-bottom:1rem">
         <h1 class="page-title" style="margin:0">Admin — Vagas</h1>
-        <a class="btn btn-primary" href="/admin/vagas/nova">+ Nova vaga</a>
+        <a class="btn btn-primary" href="/vagas/cadastro">+ Nova vaga</a>
     </div>
     {#if msg}<div class="alert alert-msg">{msg}</div>{/if}
     {#if erro}<div class="alert alert-erro">{erro}</div>{/if}
@@ -24,8 +24,8 @@
                 <td>{v.empresa}</td>
                 <td>{#if v.ativa}<span class="badge">Sim</span>{#else}Não{/if}</td>
                 <td>
-                    <a class="btn btn-sm btn-outline" href="/admin/vagas/editar/{v.id}">Editar</a>
-                    <form method="post" action="/admin/vagas/excluir/{v.id}" style="display:inline" data-confirm="Excluir esta vaga?">
+                    <a class="btn btn-sm btn-outline" href="/vagas/editar/{v.id}">Editar</a>
+                    <form method="post" action="/vagas/excluir/{v.id}" style="display:inline" data-confirm="Excluir esta vaga?">
                         <button type="submit" class="btn btn-sm btn-danger">Excluir</button>
                     </form>
                 </td>

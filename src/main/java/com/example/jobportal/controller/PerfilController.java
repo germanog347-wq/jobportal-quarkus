@@ -12,7 +12,7 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import java.net.URI;
 
-@Path("/perfil")
+@Path("/usuario")
 public class PerfilController {
 
     @Inject
@@ -26,13 +26,14 @@ public class PerfilController {
     }
 
     @GET
+    @Path("/perfil")
     @Produces(MediaType.TEXT_HTML)
     public Response pagina(@QueryParam("erro") String erro,
                            @QueryParam("msg") String msg,
                            @CookieParam("usuarioId") String uid) {
         Usuario u = sessaoService.usuarioLogado(uid).orElse(null);
         if (u == null) {
-            return Response.seeOther(URI.create("/login?erro=" + enc("Faça login"))).build();
+            return Response.seeOther(URI.create("/auth/login?erro=" + enc("Faça login"))).build();
         }
         // Recarrega do banco para ter dados atualizados
         u = usuarioBO.buscarPorId(u.getId()).orElse(u);
@@ -40,18 +41,19 @@ public class PerfilController {
     }
 
     @POST
+    @Path("/atualizar")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     public Response atualizar(@BeanParam PerfilUpdateDTO dto,
                               @CookieParam("usuarioId") String uid) {
         Usuario u = sessaoService.usuarioLogado(uid).orElse(null);
         if (u == null) {
-            return Response.seeOther(URI.create("/login")).build();
+            return Response.seeOther(URI.create("/auth/login")).build();
         }
         try {
             usuarioBO.atualizarPerfil(u.getId(), dto);
-            return Response.seeOther(URI.create("/perfil?msg=" + enc("Perfil atualizado com sucesso"))).build();
+            return Response.seeOther(URI.create("/usuario/perfil?msg=" + enc("Perfil atualizado com sucesso"))).build();
         } catch (IllegalArgumentException e) {
-            return Response.seeOther(URI.create("/perfil?erro=" + enc(e.getMessage()))).build();
+            return Response.seeOther(URI.create("/usuario/perfil?erro=" + enc(e.getMessage()))).build();
         }
     }
 

@@ -13,7 +13,7 @@ import jakarta.ws.rs.core.Response;
 import java.net.URI;
 import java.util.List;
 
-@Path("/minhas-candidaturas")
+@Path("/candidaturas")
 public class CandidaturasController {
 
     @Inject
@@ -27,11 +27,12 @@ public class CandidaturasController {
     }
 
     @GET
+    @Path("/minhas")
     @Produces(MediaType.TEXT_HTML)
     public Response pagina(@CookieParam("usuarioId") String uid) {
         Usuario u = sessaoService.usuarioLogado(uid).orElse(null);
         if (u == null) {
-            return Response.seeOther(URI.create("/login?erro=" + enc("Faça login"))).build();
+            return Response.seeOther(URI.create("/auth/login?erro=" + enc("Faça login"))).build();
         }
         return Response.ok(Templates.minhas(candidaturaBO.listarMinhas(u), u))
                 .type(MediaType.TEXT_HTML).build();

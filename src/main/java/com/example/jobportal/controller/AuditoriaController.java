@@ -14,7 +14,7 @@ import jakarta.ws.rs.core.Response;
 import java.net.URI;
 import java.util.List;
 
-@Path("/admin/auditoria")
+@Path("/logs")
 public class AuditoriaController {
 
     @Inject
@@ -31,8 +31,8 @@ public class AuditoriaController {
     @Produces(MediaType.TEXT_HTML)
     public Response pagina(@CookieParam("usuarioId") String uid) {
         Usuario u = sessaoService.usuarioLogado(uid).orElse(null);
-        if (u == null) return Response.seeOther(URI.create("/login?erro=Faça%20login")).build();
-        if (u.getTipo() != TipoUsuario.ADMIN) return Response.seeOther(URI.create("/")).build();
+        if (u == null) return Response.seeOther(URI.create("/auth/login?erro=Fa%C3%A7a+login")).build();
+        if (u.getTipo() != TipoUsuario.ADMIN) return Response.seeOther(URI.create("/homepage")).build();
         return Response.ok(Templates.auditoria(auditoriaBO.listarTodas(), u))
                 .type(MediaType.TEXT_HTML).build();
     }

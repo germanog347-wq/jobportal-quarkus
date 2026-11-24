@@ -14,7 +14,7 @@ import jakarta.ws.rs.core.Response;
 import java.net.URI;
 import java.util.List;
 
-@Path("/")
+@Path("/vagas")
 public class VagasController {
 
     @Inject
@@ -31,7 +31,7 @@ public class VagasController {
     }
 
     @GET
-    @Path("/vagas")
+    @Path("/visao-geral")
     @Produces(MediaType.TEXT_HTML)
     public Response listar(@QueryParam("q") String q, @CookieParam("usuarioId") String uid) {
         Usuario u = sessaoService.usuarioLogado(uid).orElse(null);
@@ -40,7 +40,7 @@ public class VagasController {
     }
 
     @GET
-    @Path("/vagas/{id}")
+    @Path("/detalhe/{id}")
     @Produces(MediaType.TEXT_HTML)
     public Response detalhe(@PathParam("id") Integer id,
                             @QueryParam("erro") String erro,
@@ -51,25 +51,25 @@ public class VagasController {
             Vaga v = vagaBO.buscar(id);
             return Response.ok(Templates.detalhe(v, u, erro, msg)).type(MediaType.TEXT_HTML).build();
         } catch (IllegalArgumentException e) {
-            return Response.seeOther(URI.create("/vagas")).build();
+            return Response.seeOther(URI.create("/vagas/visao-geral")).build();
         }
     }
 
     @POST
-    @Path("/vagas/{id}/candidatar")
+    @Path("/candidatar/{id}")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     public Response candidatar(@PathParam("id") Integer id,
                                @FormParam("mensagem") String mensagem,
                                @CookieParam("usuarioId") String uid) {
         Usuario u = sessaoService.usuarioLogado(uid).orElse(null);
         if (u == null) {
-            return Response.seeOther(URI.create("/login?erro=" + enc("Faça login para se candidatar"))).build();
+            return Response.seeOther(URI.create("/auth/login?erro=" + enc("Faça login para se candidatar"))).build();
         }
         try {
             candidaturaBO.candidatar(id, mensagem, u);
-            return Response.seeOther(URI.create("/vagas/" + id + "?msg=" + enc("Candidatura enviada!"))).build();
+            return Response.seeOther(URI.create("/vagas/detalhe/" + id + "?msg=" + enc("Candidatura enviada!"))).build();
         } catch (IllegalArgumentException e) {
-            return Response.seeOther(URI.create("/vagas/" + id + "?erro=" + enc(e.getMessage()))).build();
+            return Response.seeOther(URI.create("/vagas/detalhe/" + id + "?erro=" + enc(e.getMessage()))).build();
         }
     }
 

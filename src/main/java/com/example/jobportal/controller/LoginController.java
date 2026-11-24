@@ -14,7 +14,7 @@ import jakarta.ws.rs.core.Response;
 import java.net.URI;
 import java.util.Optional;
 
-@Path("/")
+@Path("/auth")
 public class LoginController {
 
     @Inject
@@ -35,7 +35,7 @@ public class LoginController {
                           @CookieParam("usuarioId") String usuarioIdStr) {
         Optional<Usuario> logado = sessaoService.usuarioLogado(usuarioIdStr);
         if (logado.isPresent()) {
-            return Response.seeOther(URI.create(logado.get().getTipo() == TipoUsuario.ADMIN ? "/admin" : "/")).build();
+            return Response.seeOther(URI.create(logado.get().getTipo() == TipoUsuario.ADMIN ? "/vagas/gestao" : "/homepage")).build();
         }
         return Response.ok(Templates.login(erro, sucesso)).type(MediaType.TEXT_HTML).build();
     }
@@ -46,9 +46,9 @@ public class LoginController {
     public Response fazerLogin(@BeanParam LoginDTO dto) {
         UsuarioBO.Resultado r = usuarioBO.autenticar(dto);
         if (!r.sucesso) {
-            return Response.seeOther(URI.create("/login?erro=" + enc(r.mensagem))).build();
+            return Response.seeOther(URI.create("/auth/login?erro=" + enc(r.mensagem))).build();
         }
-        return Response.seeOther(URI.create("/"))
+        return Response.seeOther(URI.create("/homepage"))
                 .cookie(sessaoService.cookieLogin(r.usuario.getId()))
                 .build();
     }
@@ -56,7 +56,7 @@ public class LoginController {
     @GET
     @Path("/logout")
     public Response logout() {
-        return Response.seeOther(URI.create("/"))
+        return Response.seeOther(URI.create("/homepage"))
                 .cookie(sessaoService.cookieLogout())
                 .build();
     }

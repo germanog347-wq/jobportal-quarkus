@@ -11,7 +11,7 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import java.net.URI;
 
-@Path("/")
+@Path("/usuario")
 public class CadastroController {
 
     @Inject
@@ -32,14 +32,14 @@ public class CadastroController {
     }
 
     @POST
-    @Path("/cadastro")
+    @Path("/salvar")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     public Response cadastrar(@BeanParam CadastroDTO dto) {
         UsuarioBO.Resultado r = usuarioBO.cadastrar(dto);
         if (!r.sucesso) {
-            return Response.seeOther(URI.create("/cadastro?erro=" + enc(r.mensagem))).build();
+            return Response.seeOther(URI.create("/usuario/cadastro?erro=" + enc(r.mensagem))).build();
         }
-        return Response.seeOther(URI.create("/"))
+        return Response.seeOther(URI.create("/homepage"))
                 .cookie(sessaoService.cookieLogin(r.usuario.getId()))
                 .build();
     }

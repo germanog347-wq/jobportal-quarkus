@@ -23,11 +23,11 @@
                 <td>{#if u.tipo == TipoUsuario:ADMIN}<span class="badge">Sim</span>{#else}Não{/if}</td>
                 <td>
                     {#if u.tipo != TipoUsuario:ADMIN}
-                    <form method="post" action="/admin/usuarios/{u.id}/promover" style="display:inline">
+                    <form method="post" action="/usuario/promover/{u.id}" style="display:inline">
                         <button class="btn btn-sm btn-primary" type="submit">Promover</button>
                     </form>
                     {#else}
-                    <form method="post" action="/admin/usuarios/{u.id}/rebaixar" style="display:inline">
+                    <form method="post" action="/usuario/rebaixar/{u.id}" style="display:inline">
                         <button class="btn btn-sm btn-outline" type="submit">Rebaixar</button>
                     </form>
                     {/if}

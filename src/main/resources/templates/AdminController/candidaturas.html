@@ -21,7 +21,7 @@
                 <td>{c.vaga.titulo}</td>
                 <td><span class="badge">{c.status.descricao}</span></td>
                 <td>
-                    <form method="post" action="/admin/candidaturas/{c.id}/status" style="display:flex;gap:0.4rem;align-items:center">
+                    <form method="post" action="/candidaturas/status/{c.id}" style="display:flex;gap:0.4rem;align-items:center">
                         <select name="status" style="width:auto;padding:0.35rem 0.5rem">
                             <option value="ENVIADA" {#if c.status == StatusCandidatura:ENVIADA}selected{/if}>Enviada</option>
                             <option value="EM_ANALISE" {#if c.status == StatusCandidatura:EM_ANALISE}selected{/if}>Em análise</option>

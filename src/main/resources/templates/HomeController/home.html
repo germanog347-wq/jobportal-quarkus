@@ -13,9 +13,9 @@
         <h1>Encontre sua próxima oportunidade</h1>
         <p>Portal de vagas com Quarkus e MySQL. Candidate-se online e acompanhe o status das suas candidaturas.</p>
         <div class="actions">
-            <a class="btn btn-primary" href="/vagas">Ver vagas</a>
+            <a class="btn btn-primary" href="/vagas/visao-geral">Ver vagas</a>
             {#if !usuario}
-            <a class="btn btn-light" href="/cadastro">Criar conta</a>
+            <a class="btn btn-light" href="/usuario/cadastro">Criar conta</a>
             {/if}
         </div>
     </div>
@@ -23,17 +23,17 @@
         <div class="card">
             <h3>Vagas ativas</h3>
             <p style="color:var(--muted);margin:0.5rem 0 1rem">Consulte vagas e candidate-se em poucos cliques.</p>
-            <a href="/vagas" class="btn btn-sm btn-outline">Explorar</a>
+            <a href="/vagas/visao-geral" class="btn btn-sm btn-outline">Explorar</a>
         </div>
         <div class="card">
             <h3>Minhas candidaturas</h3>
             <p style="color:var(--muted);margin:0.5rem 0 1rem">Acompanhe o andamento das suas aplicações.</p>
-            <a href="/minhas-candidaturas" class="btn btn-sm btn-outline">Ver status</a>
+            <a href="/candidaturas/minhas" class="btn btn-sm btn-outline">Ver status</a>
         </div>
         <div class="card">
             <h3>Meu perfil</h3>
             <p style="color:var(--muted);margin:0.5rem 0 1rem">Atualize seus dados e credenciais quando precisar.</p>
-            <a href="/perfil" class="btn btn-sm btn-outline">Abrir perfil</a>
+            <a href="/usuario/perfil" class="btn btn-sm btn-outline">Abrir perfil</a>
         </div>
     </div>
 </div>

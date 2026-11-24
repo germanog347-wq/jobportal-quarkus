@@ -26,16 +26,16 @@
         {#if usuario}
         <hr style="border:none;border-top:1px solid var(--border);margin:1.25rem 0">
         <h3>Candidatar-se</h3>
-        <form method="post" action="/vagas/{vaga.id}/candidatar">
+        <form method="post" action="/vagas/candidatar/{vaga.id}">
             <label>Mensagem (opcional)</label>
             <textarea name="mensagem" placeholder="Conte um pouco sobre você..."></textarea>
             <div class="form-actions">
                 <button type="submit" class="btn btn-primary">Enviar candidatura</button>
-                <a href="/vagas" class="btn btn-outline">Voltar</a>
+                <a href="/vagas/visao-geral" class="btn btn-outline">Voltar</a>
             </div>
         </form>
         {#else}
-        <p style="margin-top:1rem"><a href="/login">Faça login</a> para se candidatar.</p>
+        <p style="margin-top:1rem"><a href="/auth/login">Faça login</a> para se candidatar.</p>
         {/if}
     </div>
 </div>

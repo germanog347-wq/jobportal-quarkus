@@ -15,14 +15,14 @@
             <p class="subtitle">Use seu e-mail e senha para acessar a conta.</p>
             {#if erro}<div class="alert alert-erro">{erro}</div>{/if}
             {#if sucesso}<div class="alert alert-msg">{sucesso}</div>{/if}
-            <form method="post" action="/login">
+            <form method="post" action="/auth/login">
                 <label>E-mail</label>
                 <input type="email" name="email" required autocomplete="email" placeholder="seu@email.com">
                 <label>Senha</label>
                 <input type="password" name="senha" required autocomplete="current-password" placeholder="••••••••">
                 <div class="form-actions">
                     <button type="submit" class="btn btn-primary">Entrar</button>
-                    <a href="/cadastro" class="btn btn-outline">Criar conta</a>
+                    <a href="/usuario/cadastro" class="btn btn-outline">Criar conta</a>
                 </div>
             </form>
         </div>

@@ -11,12 +11,12 @@
 <div class="container">
     <h1 class="page-title">Vagas disponíveis</h1>
 
-    <form class="search-bar" method="get" action="/vagas" role="search">
+    <form class="search-bar" method="get" action="/vagas/visao-geral" role="search">
         <input type="search" id="busca-vagas" name="q" value="{q ?: ''}"
                placeholder="Buscar por título, empresa, cidade..." autocomplete="off">
         <button type="submit" class="btn btn-primary">Buscar</button>
         {#if q}
-        <a href="/vagas" class="btn btn-outline">Limpar</a>
+        <a href="/vagas/visao-geral" class="btn btn-outline">Limpar</a>
         {/if}
     </form>
 
@@ -25,18 +25,18 @@
     {#if vagas.isEmpty}
         <div class="card empty-state">
             <p>Nenhuma vaga encontrada{#if q} para “{q}”{/if}.</p>
-            <a href="/vagas" class="btn btn-outline">Ver todas</a>
+            <a href="/vagas/visao-geral" class="btn btn-outline">Ver todas</a>
         </div>
     {#else}
         {#for v in vagas}
         <article class="job-card">
-            <h3><a href="/vagas/{v.id}">{v.titulo}</a></h3>
+            <h3><a href="/vagas/detalhe/{v.id}">{v.titulo}</a></h3>
             <div class="job-meta">
                 <span>🏢 {v.empresa}</span>
                 <span>📍 {v.localizacao}</span>
                 {#if v.faixaSalarial}<span>💰 {v.faixaSalarial}</span>{/if}
             </div>
-            <a class="btn btn-sm btn-primary" href="/vagas/{v.id}">Ver detalhes</a>
+            <a class="btn btn-sm btn-primary" href="/vagas/detalhe/{v.id}">Ver detalhes</a>
         </article>
         {/for}
     {/if}

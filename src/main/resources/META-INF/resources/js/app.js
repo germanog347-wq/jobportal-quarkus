@@ -62,7 +62,7 @@
 
     // Foco na busca de vagas se existir
     var search = document.getElementById("busca-vagas");
-    if (search && window.location.pathname === "/vagas" && !search.value) {
+    if (search && window.location.pathname === "/vagas/visao-geral" && !search.value) {
       // não força foco automático em mobile
     }
 
