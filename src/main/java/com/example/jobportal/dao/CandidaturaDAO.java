@@ -14,11 +14,11 @@ public class CandidaturaDAO {
     @Inject
     EntityManager em;
 
-    public Optional<Candidatura> buscarPorId(Long id) {
+    public Optional<Candidatura> buscarPorId(Integer id) {
         return Optional.ofNullable(em.find(Candidatura.class, id));
     }
 
-    public List<Candidatura> listarPorUsuario(Long usuarioId) {
+    public List<Candidatura> listarPorUsuario(Integer usuarioId) {
         return em.createQuery(
                 "SELECT c FROM Candidatura c WHERE c.usuario.id = :uid ORDER BY c.criadoEm DESC",
                 Candidatura.class)
@@ -30,7 +30,7 @@ public class CandidaturaDAO {
                 .getResultList();
     }
 
-    public boolean existe(Long usuarioId, Long vagaId) {
+    public boolean existe(Integer usuarioId, Integer vagaId) {
         Long count = em.createQuery(
                 "SELECT COUNT(c) FROM Candidatura c WHERE c.usuario.id = :uid AND c.vaga.id = :vid",
                 Long.class)
@@ -42,7 +42,7 @@ public class CandidaturaDAO {
 
     @Transactional
     public Candidatura salvar(Candidatura c) {
-        if (c.id == null) {
+        if (c.getId() == null) {
             em.persist(c);
             return c;
         }

@@ -14,7 +14,7 @@ public class VagaDAO {
     @Inject
     EntityManager em;
 
-    public Optional<Vaga> buscarPorId(Long id) {
+    public Optional<Vaga> buscarPorId(Integer id) {
         return Optional.ofNullable(em.find(Vaga.class, id));
     }
 
@@ -50,7 +50,7 @@ public class VagaDAO {
 
     @Transactional
     public Vaga salvar(Vaga v) {
-        if (v.id == null) {
+        if (v.getId() == null) {
             em.persist(v);
             return v;
         }
@@ -58,7 +58,7 @@ public class VagaDAO {
     }
 
     @Transactional
-    public void remover(Long id) {
+    public void remover(Integer id) {
         Vaga v = em.find(Vaga.class, id);
         if (v != null) em.remove(v);
     }

@@ -35,7 +35,7 @@ public class PerfilController {
             return Response.seeOther(URI.create("/login?erro=" + enc("Faça login"))).build();
         }
         // Recarrega do banco para ter dados atualizados
-        u = usuarioBO.buscarPorId(u.id).orElse(u);
+        u = usuarioBO.buscarPorId(u.getId()).orElse(u);
         return Response.ok(Templates.perfil(u, erro, msg)).type(MediaType.TEXT_HTML).build();
     }
 
@@ -48,7 +48,7 @@ public class PerfilController {
             return Response.seeOther(URI.create("/login")).build();
         }
         try {
-            usuarioBO.atualizarPerfil(u.id, dto);
+            usuarioBO.atualizarPerfil(u.getId(), dto);
             return Response.seeOther(URI.create("/perfil?msg=" + enc("Perfil atualizado com sucesso"))).build();
         } catch (IllegalArgumentException e) {
             return Response.seeOther(URI.create("/perfil?erro=" + enc(e.getMessage()))).build();

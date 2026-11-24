@@ -1,6 +1,7 @@
 package com.example.jobportal.service;
 
 import com.example.jobportal.dao.UsuarioDAO;
+import com.example.jobportal.model.TipoUsuario;
 import com.example.jobportal.model.Usuario;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -21,15 +22,15 @@ public class SessaoService {
             return Optional.empty();
         }
         try {
-            Long id = Long.parseLong(usuarioIdStr.trim());
-            return usuarioDAO.buscarPorId(id).filter(u -> u.ativo);
+            Integer id = Integer.parseInt(usuarioIdStr.trim());
+            return usuarioDAO.buscarPorId(id).filter(Usuario::isAtivo);
         } catch (NumberFormatException e) {
             return Optional.empty();
         }
     }
 
     /** Cookie HttpOnly + SameSite=Lax — não acessível via JS (mais seguro). */
-    public NewCookie cookieLogin(Long usuarioId) {
+    public NewCookie cookieLogin(Integer usuarioId) {
         return new NewCookie.Builder(COOKIE_NAME)
                 .value(String.valueOf(usuarioId))
                 .path("/")
@@ -50,6 +51,6 @@ public class SessaoService {
     }
 
     public boolean isAdmin(String usuarioIdStr) {
-        return usuarioLogado(usuarioIdStr).map(u -> u.isAdmin).orElse(false);
+        return usuarioLogado(usuarioIdStr).map(u -> u.getTipo() == TipoUsuario.ADMIN).orElse(false);
     }
 }

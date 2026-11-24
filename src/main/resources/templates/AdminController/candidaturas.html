@@ -19,14 +19,14 @@
             <tr>
                 <td>{c.usuario.nome}<br><small style="color:var(--muted)">{c.usuario.email}</small></td>
                 <td>{c.vaga.titulo}</td>
-                <td><span class="badge">{c.status}</span></td>
+                <td><span class="badge">{c.status.descricao}</span></td>
                 <td>
                     <form method="post" action="/admin/candidaturas/{c.id}/status" style="display:flex;gap:0.4rem;align-items:center">
                         <select name="status" style="width:auto;padding:0.35rem 0.5rem">
-                            <option value="ENVIADA" {#if c.status == 'ENVIADA'}selected{/if}>ENVIADA</option>
-                            <option value="EM ANALISE" {#if c.status == 'EM ANALISE'}selected{/if}>EM ANALISE</option>
-                            <option value="APROVADA" {#if c.status == 'APROVADA'}selected{/if}>APROVADA</option>
-                            <option value="REJEITADA" {#if c.status == 'REJEITADA'}selected{/if}>REJEITADA</option>
+                            <option value="ENVIADA" {#if c.status == StatusCandidatura:ENVIADA}selected{/if}>Enviada</option>
+                            <option value="EM_ANALISE" {#if c.status == StatusCandidatura:EM_ANALISE}selected{/if}>Em análise</option>
+                            <option value="APROVADA" {#if c.status == StatusCandidatura:APROVADA}selected{/if}>Aprovada</option>
+                            <option value="REJEITADA" {#if c.status == StatusCandidatura:REJEITADA}selected{/if}>Rejeitada</option>
                         </select>
                         <button class="btn btn-sm btn-primary" type="submit">OK</button>
                     </form>

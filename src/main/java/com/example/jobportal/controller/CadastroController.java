@@ -40,7 +40,7 @@ public class CadastroController {
             return Response.seeOther(URI.create("/cadastro?erro=" + enc(r.mensagem))).build();
         }
         return Response.seeOther(URI.create("/"))
-                .cookie(sessaoService.cookieLogin(r.usuario.id))
+                .cookie(sessaoService.cookieLogin(r.usuario.getId()))
                 .build();
     }
 

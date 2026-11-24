@@ -42,7 +42,7 @@ public class VagasController {
     @GET
     @Path("/vagas/{id}")
     @Produces(MediaType.TEXT_HTML)
-    public Response detalhe(@PathParam("id") Long id,
+    public Response detalhe(@PathParam("id") Integer id,
                             @QueryParam("erro") String erro,
                             @QueryParam("msg") String msg,
                             @CookieParam("usuarioId") String uid) {
@@ -58,7 +58,7 @@ public class VagasController {
     @POST
     @Path("/vagas/{id}/candidatar")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    public Response candidatar(@PathParam("id") Long id,
+    public Response candidatar(@PathParam("id") Integer id,
                                @FormParam("mensagem") String mensagem,
                                @CookieParam("usuarioId") String uid) {
         Usuario u = sessaoService.usuarioLogado(uid).orElse(null);

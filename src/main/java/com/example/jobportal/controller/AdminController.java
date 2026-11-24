@@ -5,6 +5,7 @@ import com.example.jobportal.bo.UsuarioBO;
 import com.example.jobportal.bo.VagaBO;
 import com.example.jobportal.dto.VagaDTO;
 import com.example.jobportal.model.Candidatura;
+import com.example.jobportal.model.TipoUsuario;
 import com.example.jobportal.model.Usuario;
 import com.example.jobportal.model.Vaga;
 import com.example.jobportal.service.SessaoService;
@@ -40,7 +41,7 @@ public class AdminController {
     private Response exigirAdmin(String uid) {
         Usuario u = sessaoService.usuarioLogado(uid).orElse(null);
         if (u == null) return Response.seeOther(URI.create("/login?erro=" + enc("Faça login"))).build();
-        if (!u.isAdmin) return Response.seeOther(URI.create("/?erro=" + enc("Acesso negado"))).build();
+        if (u.getTipo() != TipoUsuario.ADMIN) return Response.seeOther(URI.create("/?erro=" + enc("Acesso negado"))).build();
         return null;
     }
 
@@ -62,14 +63,14 @@ public class AdminController {
         if (r != null) return r;
         Usuario u = sessaoService.usuarioLogado(uid).get();
         Vaga v = new Vaga();
-        v.ativa = true;
+        v.setAtiva(true);
         return Response.ok(Templates.formVaga(v, "/admin/vagas/salvar", u, null)).type(MediaType.TEXT_HTML).build();
     }
 
     @GET
     @Path("/vagas/editar/{id}")
     @Produces(MediaType.TEXT_HTML)
-    public Response editar(@PathParam("id") Long id, @CookieParam("usuarioId") String uid) {
+    public Response editar(@PathParam("id") Integer id, @CookieParam("usuarioId") String uid) {
         Response r = exigirAdmin(uid);
         if (r != null) return r;
         Usuario u = sessaoService.usuarioLogado(uid).get();
@@ -93,7 +94,7 @@ public class AdminController {
             vagaBO.criar(dto, u);
             return Response.seeOther(URI.create("/admin?msg=" + enc("Vaga criada"))).build();
         } catch (IllegalArgumentException e) {
-            Vaga v = new Vaga(dto.titulo, dto.descricao, dto.empresa, dto.localizacao, dto.faixaSalarial, dto.getDataExpiracaoAsDate());
+            Vaga v = new Vaga(dto);
             return Response.ok(Templates.formVaga(v, "/admin/vagas/salvar", u, e.getMessage()))
                     .type(MediaType.TEXT_HTML).build();
         }
@@ -102,7 +103,7 @@ public class AdminController {
     @POST
     @Path("/vagas/atualizar/{id}")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    public Response atualizar(@PathParam("id") Long id, @BeanParam VagaDTO dto,
+    public Response atualizar(@PathParam("id") Integer id, @BeanParam VagaDTO dto,
                               @CookieParam("usuarioId") String uid) {
         Response r = exigirAdmin(uid);
         if (r != null) return r;
@@ -119,7 +120,7 @@ public class AdminController {
 
     @POST
     @Path("/vagas/excluir/{id}")
-    public Response excluir(@PathParam("id") Long id, @CookieParam("usuarioId") String uid) {
+    public Response excluir(@PathParam("id") Integer id, @CookieParam("usuarioId") String uid) {
         Response r = exigirAdmin(uid);
         if (r != null) return r;
         Usuario u = sessaoService.usuarioLogado(uid).get();
@@ -145,12 +146,12 @@ public class AdminController {
 
     @POST
     @Path("/usuarios/{id}/promover")
-    public Response promover(@PathParam("id") Long id, @CookieParam("usuarioId") String uid) {
+    public Response promover(@PathParam("id") Integer id, @CookieParam("usuarioId") String uid) {
         Response r = exigirAdmin(uid);
         if (r != null) return r;
         Usuario u = sessaoService.usuarioLogado(uid).get();
         try {
-            usuarioBO.promover(id, u.email);
+            usuarioBO.promover(id, u.getEmail());
             return Response.seeOther(URI.create("/admin/usuarios?msg=" + enc("Promovido"))).build();
         } catch (Exception e) {
             return Response.seeOther(URI.create("/admin/usuarios?erro=" + enc(e.getMessage()))).build();
@@ -159,12 +160,12 @@ public class AdminController {
 
     @POST
     @Path("/usuarios/{id}/rebaixar")
-    public Response rebaixar(@PathParam("id") Long id, @CookieParam("usuarioId") String uid) {
+    public Response rebaixar(@PathParam("id") Integer id, @CookieParam("usuarioId") String uid) {
         Response r = exigirAdmin(uid);
         if (r != null) return r;
         Usuario u = sessaoService.usuarioLogado(uid).get();
         try {
-            usuarioBO.rebaixar(id, u.email);
+            usuarioBO.rebaixar(id, u.getEmail());
             return Response.seeOther(URI.create("/admin/usuarios?msg=" + enc("Rebaixado"))).build();
         } catch (Exception e) {
             return Response.seeOther(URI.create("/admin/usuarios?erro=" + enc(e.getMessage()))).build();
@@ -186,7 +187,7 @@ public class AdminController {
     @POST
     @Path("/candidaturas/{id}/status")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    public Response status(@PathParam("id") Long id, @FormParam("status") String status,
+    public Response status(@PathParam("id") Integer id, @FormParam("status") String status,
                            @CookieParam("usuarioId") String uid) {
         Response r = exigirAdmin(uid);
         if (r != null) return r;

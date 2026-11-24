@@ -1,50 +1,123 @@
 package com.example.jobportal.model;
 
+import com.example.jobportal.dto.VagaDTO;
 import jakarta.persistence.*;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "vagas")
+@Table(name = "vaga")
 public class Vaga {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    public Long id;
-
+    private Integer id;
     @Column(nullable = false, length = 150)
-    public String titulo;
-
+    private String titulo;
     @Column(nullable = false, length = 2000)
-    public String descricao;
-
+    private String descricao;
     @Column(nullable = false, length = 100)
-    public String empresa;
-
+    private String empresa;
     @Column(nullable = false, length = 100)
-    public String localizacao;
-
+    private String localizacao;
     @Column(name = "faixa_salarial", length = 50)
-    public String faixaSalarial;
-
+    private String faixaSalarial;
     @Column(name = "data_expiracao")
-    public LocalDate dataExpiracao;
-
+    private LocalDate dataExpiracao;
     @Column(nullable = false)
-    public boolean ativa = true;
-
+    private boolean ativa = true;
     @Column(name = "criado_em")
-    public LocalDateTime criadoEm = LocalDateTime.now();
+    private LocalDateTime criadoEm = LocalDateTime.now();
 
-    public Vaga() {}
+    //Construtores
+    public Vaga() {
+    }
 
-    public Vaga(String titulo, String descricao, String empresa, String localizacao,
-                String faixaSalarial, LocalDate dataExpiracao) {
+    public Vaga(VagaDTO dto) {
+        this.titulo = limpar(dto.titulo);
+        this.descricao = limpar(dto.descricao);
+        this.empresa = limpar(dto.empresa);
+        this.localizacao = limpar(dto.localizacao);
+        this.faixaSalarial = dto.faixaSalarial;
+        this.dataExpiracao = dto.getDataExpiracaoAsDate();
+        this.ativa = dto.isAtiva();
+    }
+
+    private static String limpar(String valor) {
+        return valor == null ? null : valor.trim();
+    }
+
+    //Getters and Setters
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public String getTitulo() {
+        return titulo;
+    }
+
+    public void setTitulo(String titulo) {
         this.titulo = titulo;
+    }
+
+    public String getDescricao() {
+        return descricao;
+    }
+
+    public void setDescricao(String descricao) {
         this.descricao = descricao;
+    }
+
+    public String getEmpresa() {
+        return empresa;
+    }
+
+    public void setEmpresa(String empresa) {
         this.empresa = empresa;
+    }
+
+    public String getLocalizacao() {
+        return localizacao;
+    }
+
+    public void setLocalizacao(String localizacao) {
         this.localizacao = localizacao;
+    }
+
+    public String getFaixaSalarial() {
+        return faixaSalarial;
+    }
+
+    public void setFaixaSalarial(String faixaSalarial) {
         this.faixaSalarial = faixaSalarial;
+    }
+
+    public LocalDate getDataExpiracao() {
+        return dataExpiracao;
+    }
+
+    public void setDataExpiracao(LocalDate dataExpiracao) {
         this.dataExpiracao = dataExpiracao;
+    }
+
+    public boolean isAtiva() {
+        return ativa;
+    }
+
+    public void setAtiva(boolean ativa) {
+        this.ativa = ativa;
+    }
+
+    public LocalDateTime getCriadoEm() {
+        return criadoEm;
+    }
+
+    public void setCriadoEm(LocalDateTime criadoEm) {
+        this.criadoEm = criadoEm;
     }
 }

@@ -2,6 +2,7 @@ package com.example.jobportal;
 
 import com.example.jobportal.dao.UsuarioDAO;
 import com.example.jobportal.dao.VagaDAO;
+import com.example.jobportal.model.TipoUsuario;
 import com.example.jobportal.model.Usuario;
 import com.example.jobportal.model.Vaga;
 import io.quarkus.runtime.StartupEvent;
@@ -22,22 +23,28 @@ public class DataSeeder {
     @Transactional
     void onStart(@Observes StartupEvent event) {
         if (usuarioDAO.contar() == 0) {
-            Usuario admin = new Usuario("Administrador", "admin@portal.com", "admin123");
-            admin.isAdmin = true;
-            admin.ativo = true;
-            admin.cpf = "00000000000";
-            admin.telefone = "(62) 99999-0000";
-            admin.cidade = "Goiânia";
-            admin.dataNascimento = LocalDate.of(1990, 1, 1);
+            Usuario admin = new Usuario();
+            admin.setNome("Administrador");
+            admin.setEmail("admin@portal.com");
+            admin.setSenha("admin123");
+            admin.setTipo(TipoUsuario.ADMIN);
+            admin.setAtivo(true);
+            admin.setCpf("00000000000");
+            admin.setTelefone("(62) 99999-0000");
+            admin.setCidade("Goiânia");
+            admin.setDataNascimento(LocalDate.of(1990, 1, 1));
             usuarioDAO.salvar(admin);
 
-            Usuario aluno = new Usuario("Aluno Teste", "aluno@email.com", "123456");
-            aluno.isAdmin = false;
-            aluno.ativo = true;
-            aluno.cpf = "12345678900";
-            aluno.telefone = "(62) 98888-1111";
-            aluno.cidade = "Luziânia";
-            aluno.dataNascimento = LocalDate.of(2000, 5, 15);
+            Usuario aluno = new Usuario();
+            aluno.setNome("Aluno Teste");
+            aluno.setEmail("aluno@email.com");
+            aluno.setSenha("123456");
+            aluno.setTipo(TipoUsuario.USUARIO);
+            aluno.setAtivo(true);
+            aluno.setCpf("12345678900");
+            aluno.setTelefone("(62) 98888-1111");
+            aluno.setCidade("Luziânia");
+            aluno.setDataNascimento(LocalDate.of(2000, 5, 15));
             usuarioDAO.salvar(aluno);
         }
 
@@ -65,8 +72,14 @@ public class DataSeeder {
 
     private void salvarVaga(String titulo, String descricao, String empresa,
                             String localizacao, String faixaSalarial, LocalDate dataExpiracao) {
-        Vaga v = new Vaga(titulo, descricao, empresa, localizacao, faixaSalarial, dataExpiracao);
-        v.ativa = true;
+        Vaga v = new Vaga();
+        v.setTitulo(titulo);
+        v.setDescricao(descricao);
+        v.setEmpresa(empresa);
+        v.setLocalizacao(localizacao);
+        v.setFaixaSalarial(faixaSalarial);
+        v.setDataExpiracao(dataExpiracao);
+        v.setAtiva(true);
         vagaDAO.salvar(v);
     }
 }

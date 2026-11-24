@@ -6,7 +6,7 @@
     {#if usuario}
         <a href="/minhas-candidaturas">Candidaturas</a>
         <a href="/perfil">Perfil</a>
-        {#if usuario.isAdmin}
+        {#if usuario.tipo == TipoUsuario:ADMIN}
             <a href="/admin">Admin</a>
             <a href="/admin/usuarios">Usuários</a>
             <a href="/admin/candidaturas">Gestão</a>

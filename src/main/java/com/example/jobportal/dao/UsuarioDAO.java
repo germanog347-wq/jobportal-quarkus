@@ -14,7 +14,7 @@ public class UsuarioDAO {
     @Inject
     EntityManager em;
 
-    public Optional<Usuario> buscarPorId(Long id) {
+    public Optional<Usuario> buscarPorId(Integer id) {
         return Optional.ofNullable(em.find(Usuario.class, id));
     }
 
@@ -51,7 +51,7 @@ public class UsuarioDAO {
 
     @Transactional
     public Usuario salvar(Usuario u) {
-        if (u.id == null) {
+        if (u.getId() == null) {
             em.persist(u);
             return u;
         }

@@ -2,6 +2,7 @@ package com.example.jobportal.controller;
 
 import com.example.jobportal.bo.UsuarioBO;
 import com.example.jobportal.dto.LoginDTO;
+import com.example.jobportal.model.TipoUsuario;
 import com.example.jobportal.model.Usuario;
 import com.example.jobportal.service.SessaoService;
 import io.quarkus.qute.CheckedTemplate;
@@ -34,7 +35,7 @@ public class LoginController {
                           @CookieParam("usuarioId") String usuarioIdStr) {
         Optional<Usuario> logado = sessaoService.usuarioLogado(usuarioIdStr);
         if (logado.isPresent()) {
-            return Response.seeOther(URI.create(logado.get().isAdmin ? "/admin" : "/")).build();
+            return Response.seeOther(URI.create(logado.get().getTipo() == TipoUsuario.ADMIN ? "/admin" : "/")).build();
         }
         return Response.ok(Templates.login(erro, sucesso)).type(MediaType.TEXT_HTML).build();
     }
@@ -48,7 +49,7 @@ public class LoginController {
             return Response.seeOther(URI.create("/login?erro=" + enc(r.mensagem))).build();
         }
         return Response.seeOther(URI.create("/"))
-                .cookie(sessaoService.cookieLogin(r.usuario.id))
+                .cookie(sessaoService.cookieLogin(r.usuario.getId()))
                 .build();
     }
 
